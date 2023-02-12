@@ -1,17 +1,13 @@
 package com.example.mpi.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,11 +32,11 @@ public class User {
 	@Column(length = 100)
 	private String userNickNm;
 	
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable( name = "tb_user_roles",
-				joinColumns = @JoinColumn(name = "user_id"),
-				inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles = new HashSet<Role>();
+	@Column(length = 100)
+	private String userEmail;
+	
+	@OneToMany(targetEntity = Role.class, fetch = FetchType.EAGER)
+	private List<Role> roles;
 	
 	@Column
 	private long userPoint;

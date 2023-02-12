@@ -9,37 +9,37 @@
       <div class="col-12">
         <div class="row g-3">
           <div class="col-12">
-            <label for="id" class="form-label">아이디</label>
-            <input type="text" class="form-control" id="id" placeholder="아이디를 입력하세요." v-model="state.signUp.id">
-            <div v-if="state.errorMsgBag.id">{{ state.errorMsgBag.id }}</div>
+            <label for="userId" class="form-label">아이디</label>
+            <input type="text" class="form-control" id="userId" placeholder="아이디를 입력하세요." v-model="state.user.userId">
+            <div class="validation-div" v-if="state.errorMsgBag.userId">{{ state.errorMsgBag.userId }}</div>
           </div>
           <div class="col-12">
-            <label for="nickName" class="form-label">닉네임</label>
-            <input type="text" class="form-control" id="nickName" placeholder="비밀번호를 입력하세요."
-              v-model="state.signUp.nickName">
-            <div v-if="state.errorMsgBag.nickName">{{ state.errorMsgBag.nickName }}</div>
+            <label for="userNickNm" class="form-label">닉네임</label>
+            <input type="text" class="form-control" id="userNickNm" placeholder="닉네임을 입력하세요."
+              v-model="state.user.userNickNm">
+            <div class="validation-div" v-if="state.errorMsgBag.userNickNm">{{ state.errorMsgBag.userNickNm }}</div>
           </div>
           <div class="col-12">
-            <label for="password" class="form-label">비밀번호</label>
-            <input type="password" class="form-control" id="password" placeholder="비밀번호를 한번 더 입력하세요."
-              v-model="state.signUp.password">
-            <div v-if="state.errorMsgBag.password">{{ state.errorMsgBag.password }}</div>
+            <label for="userPw" class="form-label">비밀번호</label>
+            <input type="password" class="form-control" id="userPw" placeholder="비밀번호를 한번 더 입력하세요."
+              v-model="state.user.userPw">
+            <div class="validation-div" v-if="state.errorMsgBag.userPw">{{ state.errorMsgBag.userPw }}</div>
           </div>
           <div class="col-12">
-            <label for="passwordChk" class="form-label">비밀번호 확인</label>
-            <input type="password" class="form-control" id="passwordChk" placeholder="비밀번호를 입력하세요."
-              v-moel="state.signUp.passwordChk">
-            <div v-if="state.errorMsgBag.passwordChk">{{ state.errorMsgBag.passwordChk }}</div>
+            <label for="userPwChk" class="form-label">비밀번호 확인</label>
+            <input type="password" class="form-control" id="userPwChk" placeholder="비밀번호를 입력하세요."
+              v-model="state.user.userPwChk">
+            <div class="validation-div" v-if="state.errorMsgBag.userPwChk">{{ state.errorMsgBag.userPwChk }}</div>
           </div>
 
           <div class="col-12">
             <label for="email" class="form-label">이메일</label>
             <input type="email" class="form-control" id="email" placeholder="이메일을 입력하세요." required=""
-              v-model="state.signUp.email">
-            <div v-if="state.errorMsgBag.passwordChk">{{ state.errorMsgBag.passwordChk }}</div>
+              v-model="state.user.userEmail">
+            <div class="validation-div" v-if="state.errorMsgBag.userEmail">{{ state.errorMsgBag.userEmail }}</div>
           </div>
           <div class="col-12">
-            <input type="checkbox" class="form-check-input" id="isAdult" v-model="state.signUp.isAdult">
+            <input type="checkbox" class="form-check-input" id="isAdult" v-model="state.user.isAdult">
             <label class="form-check-label" for="isAdult">성인 여부를 체크해주세요.</label>
           </div>
         </div>
@@ -51,9 +51,8 @@
 </template>
 <script>
 import { reactive } from '@vue/reactivity'
-import app from '../js/app'
-// import axios from 'axios'
-// import router from '@/router'
+import axios from 'axios'
+import router from '@/router'
 
 export default {
   components: {},
@@ -64,59 +63,27 @@ export default {
   },
   setup() {
     const state = reactive({
-      signUp: {
-        id: '',
-        nickName: '',
-        password: '',
+      user: {
+        userId: '',
+        userNickNm: '',
+        userPw: '',
         passwordChk: '',
-        email: '',
+        userEmail: '',
         isAdult: ''
       },
       errorMsgBag: {}
     })
 
     const submit = () => {
-      validationChk()
+      state.errorMsgBag = {}
+
+      axios.post('/auth/signup', state.user).then((res) => {
+        router.push({ path: '/' })
+        alert('회원가입이 완료 되었습니다. 가입한 계정으로 로그인 하세요.')
+      }).catch((error) => {
+        state.errorMsgBag = error.response.data
+      })
     }
-
-    const validationChk = () => {
-      if (!state.signUp.id) {
-        state.errorMsgBag.id = '아이디는 필수 입력 사항입니다.'
-      } else {
-        state.errorMsgBag.id = ''
-      }
-
-      if (!state.signUp.nickName) {
-        state.errorMsgBag.nickName = '닉네임은 필수 입력 사항입니다.'
-      }
-
-      if (!state.signUp.password) {
-        state.errorMsgBag.password = '비밀번호는 필수 입력 사항입니다.'
-      }
-
-      if (!state.signUp.passwordChk) {
-        state.errorMsgBag.passwordChk = '비밀번호 확인은 필수 입력 사항입니다.'
-      }
-
-      if (!state.signUp.email) {
-        state.errorMsgBag.email = '이메일은 필수 입력 사항입니다.'
-      } else if (!app.validEmail(state.signUp.email)) {
-        state.errorMsgBag.emailVali = '이메일 형식을 확인해주세요.'
-      }
-
-      if (!app.isEmptyObj(state.errorMsgBag)) {
-        // realRegistAccount()
-      }
-    }
-
-    // const realRegistAccount = () => {
-    //   axios.post('/auth/signup', state.signUp).then((res) => {
-    //     router.push({ path: '/' })
-    //     alert('회원가입이 완료 되었습니다. 가입한 계정으로 로그인 하세요.')
-    //   }).catch(() => {
-    //     alert('회원가입에 실패했습니다. 관리자에게 문의해주시기 바랍니다.')
-    //   })
-    // }
 
     return { state, submit }
   },

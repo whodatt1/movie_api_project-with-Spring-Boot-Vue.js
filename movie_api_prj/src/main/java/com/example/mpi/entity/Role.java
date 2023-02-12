@@ -23,10 +23,9 @@ import lombok.NoArgsConstructor;
 public class Role {
 	
 	@Id
-	private long roleId;
+	private String userId;
 	
-	@Enumerated(EnumType.STRING)
 	@Column(length = 100)
-	private ERole roleNm;
+	private String roleNm;
 	
 }
