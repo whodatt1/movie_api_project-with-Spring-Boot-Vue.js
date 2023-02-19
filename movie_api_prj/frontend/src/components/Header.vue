@@ -16,7 +16,11 @@
           <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">커뮤니티</a></li>
           <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">FAQ</a></li>
           <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">아이콘샵</a></li>
-          <li class="nav-item"><router-link to="/login"><button class="btn btn-primary px-3 py-2 mt-2">로그인</button></router-link></li>
+          <li class="nav-item">
+            <router-link to="/login" v-if="!$store.state.auth.status.loggedIn"><button class="btn btn-primary px-3 py-2 mt-2">로그인</button></router-link>
+            <router-link to="/logout" v-else><button class="btn btn-primary px-3 py-2 mt-2">로그아웃</button></router-link>
+          </li>
+          <li class="nav-item"><router-link to="/login"><button class="btn btn-success px-3 py-2 mt-2">내정보</button></router-link></li>
         </ul>
       </div>
     </div>

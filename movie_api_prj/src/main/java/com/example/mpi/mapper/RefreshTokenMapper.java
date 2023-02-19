@@ -1,4 +1,4 @@
-package com.example.mpi.repository;
+package com.example.mpi.mapper;
 
 import java.util.Optional;
 
@@ -8,10 +8,16 @@ import com.example.mpi.entity.RefreshToken;
 import com.example.mpi.entity.User;
 
 @Mapper
-public interface RefreshTokenRepository {
+public interface RefreshTokenMapper {
+	
 	Optional<RefreshToken> findByToken(String token);
+	
 	RefreshToken findById(String id);
-	String save(RefreshToken refreshToken);
+	
+	int save(RefreshToken refreshToken);
+	
 	int deleteByUser(User user);
+	
 	int deleteByToken(RefreshToken refreshToken);
+	
 }

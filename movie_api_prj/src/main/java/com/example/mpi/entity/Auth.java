@@ -9,14 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GenreCd {
+public class Auth {
 	
-	private long id;
+	private String userId;
 	
-	private String name;
-	
-	private String dataRegAt;
-	
-	private String dataModAt;
+	private String auth;
 	
 }

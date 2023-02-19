@@ -20,8 +20,6 @@ import com.example.mpi.security.services.UserDetailsServiceImpl;
 
 @Configuration
 @EnableGlobalMethodSecurity(
-	    // securedEnabled = true,
-	    // jsr250Enabled = true,
 	    prePostEnabled = true)
 public class SecurityConfig {
 	
@@ -34,6 +32,11 @@ public class SecurityConfig {
 	@Bean
 	public AuthTokenFilter authenticationJwtTokenFilter() {
 		return new AuthTokenFilter();
+	}
+	
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+		return authConfig.getAuthenticationManager();
 	}
 	
 	@Bean

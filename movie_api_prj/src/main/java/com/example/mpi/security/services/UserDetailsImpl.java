@@ -30,44 +30,35 @@ public class UserDetailsImpl implements UserDetails {
 	
 	private String userNickNm;
 	
+	private String userEmail;
+	
 	private long userPoint;
 	
 	private String profileImgPath;
 	
 	private boolean adult;
 	
-	private boolean del;
-	
-//	private String regDt;
-	
-	private String regUserId;
-	
-//	private String modDt;
-	
-	private String modUserId;
-	
-	private Collection<? extends GrantedAuthority> authorities;	
+	private Collection<? extends GrantedAuthority> authorities;
 	
 	public static UserDetailsImpl build(User user) {
 		
-		List<GrantedAuthority> authorities = user.getRoles().stream()
-				.map(role -> new SimpleGrantedAuthority(role.getRoleNm()))
-				.collect(Collectors.toList());
+		List<GrantedAuthority> authorities = user.getAuthList()
+			.stream()
+			.map(auth -> new SimpleGrantedAuthority(auth.getAuth()))
+			.collect(Collectors.toList());
 		
 		return new UserDetailsImpl(
 					user.getUserId(),
 					user.getUserPw(),
 					user.getUserNickNm(),
+					user.getUserEmail(),
 					user.getUserPoint(),
 					user.getProfileImgPath(),
 					user.isAdult(),
-					user.isDel(),
-					user.getRegUserId(),
-					user.getModUserId(),
 					authorities
 				);
 	}
-
+	
 	@Override
 	public String getPassword() {
 		return userPw;
@@ -109,11 +100,5 @@ public class UserDetailsImpl implements UserDetails {
 		UserDetailsImpl user = (UserDetailsImpl) obj;
 		return Objects.equals(userId, user.userId);
 	}
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
-	}
-	
 	
 }

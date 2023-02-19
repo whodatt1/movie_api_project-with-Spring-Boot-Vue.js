@@ -11247,3 +11247,9 @@ header.masthead .site-heading .h1 {
     font-size: 2.25rem;
   }
 }
+
+/* custom */
+.validation-div {
+  color: red;
+  font-size: small;
+}

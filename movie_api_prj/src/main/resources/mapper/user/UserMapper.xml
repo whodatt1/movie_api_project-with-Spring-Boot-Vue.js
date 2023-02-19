@@ -1,8 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.myweb.mpi.repository.UserRepository">
+<mapper namespace="com.example.mpi.mapper.UserMapper">
     <select id="findByUserId" parameterType="string" resultType="User">
-    	select * from tb_user
-    	where user_id = #{userId}
+    	SELECT * FROM tb_user
+    	WHERE user_id = #{userId}
     </select>
+    <select id="existsByUserId" parameterType="string" resultType="boolean">
+    	SELECT EXISTS 
+    	(
+    		SELECT * 
+    			FROM tb_user 
+    			WHERE user_id = #{userId} LIMIT 1
+    	);
+    </select>
+    <insert id="saveUser" parameterType="User">
+		INSERT INTO tb_user
+		(
+			user_id,
+			user_pw,
+			user_nick_nm,
+			user_email,
+			user_point,
+			adult,
+			del,
+			reg_dt,
+			reg_user_id,
+			mod_dt,
+			mod_user_id
+		)
+		VALUES
+		(
+			#{userId},
+			#{userPw},
+			#{userNickNm},
+			#{userEmail},
+			0,
+			#{adult},
+			0,
+			now(),
+			#{userId},
+			now(),
+			#{userId}			
+		)
+    </insert>
 </mapper>

@@ -2,7 +2,6 @@ package com.example.mpi.config;
 
 import java.util.List;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
@@ -35,7 +34,6 @@ public class MovieApiJobConfig {
 	
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
-	private final EntityManagerFactory emf;
 	private final DataSource dataSource;
 	
 	// 영화 정보 가져오는 Job

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.mpi.entity.RefreshToken;
-import com.example.mpi.repository.RefreshTokenRepository;
-import com.example.mpi.repository.UserRepository;
+import com.example.mpi.mapper.RefreshTokenMapper;
+import com.example.mpi.mapper.UserMapper;
 import com.example.mpi.security.jwt.exception.TokenRefreshException;
 
 @Service
@@ -21,10 +21,10 @@ public class RefreshTokenService {
 	private Long refreshTokenDurationMs;
 	
 	@Autowired
-	private RefreshTokenRepository refreshTokenRepository;
+	private RefreshTokenMapper refreshTokenRepository;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private UserMapper userMapper;
 	
 	public Optional<RefreshToken> findByToken(String token) {
 		return refreshTokenRepository.findByToken(token);
@@ -33,18 +33,20 @@ public class RefreshTokenService {
 	public RefreshToken createRefreshToken(String userId) {
 		
 		RefreshToken refreshToken = RefreshToken.builder()
-												.user(userRepository.findByUserId(userId).get())
+												.userId(userMapper.findByUserId(userId).getUserId())
 												.token(UUID.randomUUID().toString())
 												.expiryDate(Instant.now().plusMillis(refreshTokenDurationMs)).build();
 		
-		String insertAfterUserId = refreshTokenRepository.save(refreshToken);
+		refreshTokenRepository.save(refreshToken);
+		
+		String insertAfterUserId = refreshToken.getUserId();
 		
 		refreshToken = refreshTokenRepository.findById(insertAfterUserId);
 		
 		return refreshToken;
 	}
 	
-	public RefreshToken verifyExpiration(RefreshToken token) throws TokenRefreshException {
+	public RefreshToken verifyExpiration(RefreshToken token) {
 		if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
 			refreshTokenRepository.deleteByToken(token);
 			throw new TokenRefreshException(token.getToken(), "리프레시 토큰이 만료되었습니다. 다시 로그인 해주세요.");
@@ -55,6 +57,6 @@ public class RefreshTokenService {
 	
 	@Transactional
 	public int deleteByUserId(String userId) {
-		return refreshTokenRepository.deleteByUser(userRepository.findByUserId(userId).get());
+		return refreshTokenRepository.deleteByUser(userMapper.findByUserId(userId));
 	}
 }

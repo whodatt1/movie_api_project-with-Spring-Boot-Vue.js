@@ -12,6 +12,7 @@
             <label for="userId" class="form-label">아이디</label>
             <input type="text" class="form-control" id="userId" placeholder="아이디를 입력하세요." v-model="state.user.userId">
             <div class="validation-div" v-if="state.errorMsgBag.userId">{{ state.errorMsgBag.userId }}</div>
+            <div class="validation-div" v-if="state.errorMsgBag.userIdDuple">{{ state.errorMsgBag.userIdDuple }}</div>
           </div>
           <div class="col-12">
             <label for="userNickNm" class="form-label">닉네임</label>
@@ -21,17 +22,10 @@
           </div>
           <div class="col-12">
             <label for="userPw" class="form-label">비밀번호</label>
-            <input type="password" class="form-control" id="userPw" placeholder="비밀번호를 한번 더 입력하세요."
+            <input type="password" class="form-control" id="userPw" placeholder="비밀번호를 입력하세요."
               v-model="state.user.userPw">
             <div class="validation-div" v-if="state.errorMsgBag.userPw">{{ state.errorMsgBag.userPw }}</div>
           </div>
-          <div class="col-12">
-            <label for="userPwChk" class="form-label">비밀번호 확인</label>
-            <input type="password" class="form-control" id="userPwChk" placeholder="비밀번호를 입력하세요."
-              v-model="state.user.userPwChk">
-            <div class="validation-div" v-if="state.errorMsgBag.userPwChk">{{ state.errorMsgBag.userPwChk }}</div>
-          </div>
-
           <div class="col-12">
             <label for="email" class="form-label">이메일</label>
             <input type="email" class="form-control" id="email" placeholder="이메일을 입력하세요." required=""
@@ -66,8 +60,7 @@ export default {
       user: {
         userId: '',
         userNickNm: '',
-        userPw: '',
-        passwordChk: '',
+        userPwChk: '',
         userEmail: '',
         isAdult: ''
       },
@@ -75,8 +68,6 @@ export default {
     })
 
     const submit = () => {
-      state.errorMsgBag = {}
-
       axios.post('/auth/signup', state.user).then((res) => {
         router.push({ path: '/' })
         alert('회원가입이 완료 되었습니다. 가입한 계정으로 로그인 하세요.')

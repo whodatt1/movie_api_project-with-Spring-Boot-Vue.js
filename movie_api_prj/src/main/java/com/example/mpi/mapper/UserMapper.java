@@ -1,4 +1,4 @@
-package com.example.mpi.repository;
+package com.example.mpi.mapper;
 
 import java.util.Optional;
 
@@ -8,8 +8,12 @@ import org.springframework.stereotype.Component;
 import com.example.mpi.entity.User;
 
 @Mapper
-@Component
-public interface UserRepository {
+public interface UserMapper {
+	
 	int saveUser(User user);
-	Optional<User> findByUserId(String userId);
+	
+	User findByUserId(String userId);
+	
+	boolean existsByUserId(String userId);
+	
 }
