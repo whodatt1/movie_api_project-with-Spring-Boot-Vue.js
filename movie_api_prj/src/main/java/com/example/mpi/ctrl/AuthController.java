@@ -63,7 +63,7 @@ public class AuthController {
 	CheckUserIdValidator checkUserIdValidator;
 	
 	@PostMapping("/login")
-	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest, Errors errors, HttpServletResponse resp) {
+	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest, Errors errors) {
 		
 		// 리퀘스트로 넘어온 값 밸리데이션 체크
 		if (errors.hasErrors()) {

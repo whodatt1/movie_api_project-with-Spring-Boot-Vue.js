@@ -38,6 +38,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		User buildForUser = User.builder()
 								.userId(user.getUserId())
 								.userPw(user.getUserPw())
+								.userNickNm(user.getUserNickNm())
+								.userEmail(user.getUserEmail())
+								.userPoint(user.getUserPoint())
+								.profileImgPath(user.getProfileImgPath())
 								.authList(authList)
 								.build();
 			
