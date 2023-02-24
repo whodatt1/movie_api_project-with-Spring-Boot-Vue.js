@@ -19,5 +19,20 @@ public class MovieServiceImpl implements MovieService{
 	public List<Movie> getMovieForMainUpComing(String adult) {
 		return movieMapper.getMovieForMainUpComing(adult);
 	}
+
+	@Override
+	public List<Movie> getMovieForMainLatest(String adult) {
+		return movieMapper.getMovieForMainLatest(adult);
+	}
+
+	@Override
+	public List<Movie> getMovieForMainTop(String adult) {
+		return movieMapper.getMovieForMainTop(adult);
+	}
+
+	@Override
+	public List<Movie> getMovieForMainPopular(String adult) {
+		return movieMapper.getMovieForMainPopular(adult);
+	}
 	
 }

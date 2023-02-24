@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class JwtUtils {
+public class JwtUtils2 {
 	
 	@Value("${myweb.mpi.jwtSecretCd}")
 	private String jwtSecretCd;

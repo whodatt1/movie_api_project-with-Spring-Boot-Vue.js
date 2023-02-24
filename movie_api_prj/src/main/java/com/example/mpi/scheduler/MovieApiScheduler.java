@@ -23,6 +23,7 @@ public class MovieApiScheduler {
 	private final JobLauncher jobLauncher;
 	
 	// 영화 정보를 가져오는 잡 스케쥴러
+//	@Scheduled(cron = "0 */5 * * * *")
 	@Scheduled(cron = "0 2 0 * * ?")
 	public void excuteMovieApiJob() {
 		try {

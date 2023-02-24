@@ -36,4 +36,52 @@ public class MovieController {
 		
 	}
 	
+	@GetMapping("/main/latest/{adult}")
+	public ResponseEntity<List<Movie>> getMovieForMainLatest(@PathVariable("adult") String adult) {
+		try {
+			List<Movie> movieForMainLatest = movieService.getMovieForMainLatest(adult);
+			
+			if (movieForMainLatest.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			
+			return new ResponseEntity<>(movieForMainLatest, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	@GetMapping("/main/top/{adult}")
+	public ResponseEntity<List<Movie>> getMovieForMainTop(@PathVariable("adult") String adult) {
+		try {
+			List<Movie> movieForMainTop = movieService.getMovieForMainTop(adult);
+			
+			if (movieForMainTop.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			
+			return new ResponseEntity<>(movieForMainTop, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	@GetMapping("/main/popular/{adult}")
+	public ResponseEntity<List<Movie>> getMovieForMainPopular(@PathVariable("adult") String adult) {
+		try {
+			List<Movie> movieForMainPopuplar = movieService.getMovieForMainPopular(adult);
+			
+			if (movieForMainPopuplar.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			
+			return new ResponseEntity<>(movieForMainPopuplar, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
 }

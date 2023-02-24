@@ -49,6 +49,7 @@ public class MovieDto {
 				.originalTitle(originalTitle)
 				.genreIds(genreIdsWithComma)
 				.overview(overview)
+				.popularity(popularity)
 				.voteAverage(voteAverage)
 				.releaseDate(releaseDate)
 				.posterPath(posterPath)

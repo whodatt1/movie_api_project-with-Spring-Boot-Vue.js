@@ -10,4 +10,10 @@ import com.example.mpi.entity.Movie;
 public interface MovieMapper {
 	
 	List<Movie> getMovieForMainUpComing(String adult);
+	
+	List<Movie> getMovieForMainLatest(String adult);
+	
+	List<Movie> getMovieForMainTop(String adult);
+	
+	List<Movie> getMovieForMainPopular(String adult);
 }

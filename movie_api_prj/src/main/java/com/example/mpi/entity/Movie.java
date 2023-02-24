@@ -22,6 +22,8 @@ public class Movie {
 	
 	private String overview;
 	
+	private float popularity;
+	
 	private float voteAverage;
 	
 	private String releaseDate;

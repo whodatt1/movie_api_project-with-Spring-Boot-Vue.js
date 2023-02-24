@@ -45,14 +45,19 @@
 </template>
 <script>
 import { reactive } from '@vue/reactivity'
-import axios from 'axios'
 import router from '@/router'
+import store from '@/store'
 
 export default {
   components: {},
   data() {
     return {
-      sampleData: ''
+      userId: '',
+      userNickNm: '',
+      userPw: '',
+      userEmail: '',
+      adult: '',
+      errorMsgBag: {}
     }
   },
   setup() {
@@ -60,18 +65,19 @@ export default {
       user: {
         userId: '',
         userNickNm: '',
-        userPwChk: '',
+        userPw: '',
         userEmail: '',
-        isAdult: ''
+        adult: ''
       },
       errorMsgBag: {}
     })
 
     const submit = () => {
-      axios.post('/auth/signup', state.user).then((res) => {
+      store.dispatch('auth/signup', state.user).then(() => {
         router.push({ path: '/' })
-        alert('회원가입이 완료 되었습니다. 가입한 계정으로 로그인 하세요.')
-      }).catch((error) => {
+        alert('가입이 완료되었습니다. 회원전용 서비스를 이용하고 싶다면 로그인 하세요.')
+      },
+      (error) => {
         state.errorMsgBag = error.response.data
       })
     }

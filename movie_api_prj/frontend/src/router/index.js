@@ -1,53 +1,46 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import CommunityVue from '../views/Community.vue'
+import LoginVue from '../views/Login.vue'
 import Main from '../views/Main.vue'
+import MovieVue from '../views/Movie.vue'
+import SignUpVue from '../views/SignUp.vue'
 
 const routes = [
   {
     path: '/',
     name: 'main',
-    component: Main
+    component: Main,
+    meta: { requiredAuth: true }
   },
   {
     path: '/login',
     name: 'login',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
+    component: LoginVue,
+    meta: { requiredAuth: false }
   },
   {
     path: '/signup',
     name: 'signup',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "signup" */ '../views/SignUp.vue')
+    component: SignUpVue,
+    meta: { requiredAuth: false }
   },
   {
     path: '/movie',
     name: 'movie',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "signup" */ '../views/Movie.vue')
+    component: MovieVue,
+    meta: { requiredAuth: false }
+  },
+  {
+    path: '/community',
+    name: 'community',
+    component: CommunityVue,
+    meta: { requiredAuth: false }
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-})
-
-router.beforeEach((to, from, next) => {
-  const publicPages = ['/login', '/signup', '/']
-  const authRequired = !publicPages.includes(to.path)
-  const loggedIn = localStorage.getItem('user')
-
-  if (authRequired && !loggedIn) {
-    next('/login')
-  } else {
-    next()
-  }
 })
 
 export default router

@@ -25,7 +25,7 @@
 </template>
 <script>
 import { reactive } from '@vue/reactivity'
-import { store } from 'vuex'
+import store from '@/store'
 import router from '@/router'
 
 export default {
