@@ -1,6 +1,7 @@
 package com.example.mpi.security.jwt;
 
 import java.io.IOException;
+import java.security.Key;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -8,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class AuthTokenFilter extends OncePerRequestFilter {
+	
+	@Value("${myweb.mpi.jwtSecretCd}")
+	private String jwtSecretCd;
 	
 	@Autowired
 	private JwtUtils jwtUtils;
@@ -56,7 +62,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	}
 	
 	private String parseJwt(HttpServletRequest request) {
-		String jwt = jwtUtils.getJwtFromCookies(request);
-	    return jwt;
+		String headerAuth = request.getHeader("Authorization");
+		
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+			return headerAuth.substring(7, headerAuth.length());
+		}
+		
+		return null;
 	}
 }

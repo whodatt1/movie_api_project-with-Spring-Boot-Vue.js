@@ -5,7 +5,7 @@
     </div>
     <div>
       <div class="scroll-row mb-5">
-        <div class="scroll-card" v-for="(item, idx) in state.upComingMovies" :key="idx">
+        <div class="scroll-card" v-for="(item, idx) in upComingMovies" :key="idx">
           <img :src="'https://image.tmdb.org/t/p/original' + item.posterPath" class="card-img-top">
           <div class="card-body">
             <h5 class="card-title">{{ item.title }}</h5>
@@ -19,7 +19,7 @@
     </div>
     <div>
       <div class="scroll-row mb-5">
-        <div class="scroll-card" v-for="(item, idx) in state.latestMovies" :key="idx">
+        <div class="scroll-card" v-for="(item, idx) in latestMovies" :key="idx">
           <img :src="'https://image.tmdb.org/t/p/original' + item.posterPath" class="card-img-top">
           <div class="card-body">
             <h5 class="card-title">{{ item.title }}</h5>
@@ -33,7 +33,7 @@
     </div>
     <div>
       <div class="scroll-row mb-5">
-        <div class="scroll-card" v-for="(item, idx) in state.popularMovies" :key="idx">
+        <div class="scroll-card" v-for="(item, idx) in popularMovies" :key="idx">
           <img :src="'https://image.tmdb.org/t/p/original' + item.posterPath" class="card-img-top">
           <div class="card-body">
             <h5 class="card-title">{{ item.title }}</h5>
@@ -47,7 +47,7 @@
     </div>
     <div>
       <div class="scroll-row mb-5">
-        <div class="scroll-card" v-for="(item, idx) in state.topMovies" :key="idx">
+        <div class="scroll-card" v-for="(item, idx) in topMovies" :key="idx">
           <img :src="'https://image.tmdb.org/t/p/original' + item.posterPath" class="card-img-top">
           <div class="card-body">
             <h5 class="card-title">{{ item.title }}</h5>
@@ -60,58 +60,63 @@
 </template>
 <script>
 import MovieService from '@/services/movie.service'
-// import store from '@/store'
-import { reactive } from '@vue/reactivity'
 
 export default {
   components: {},
   data() {
     return {
-      sampleData: ''
-    }
-  },
-  setup() {
-    const state = reactive({
       upComingMovies: [],
       latestMovies: [],
       topMovies: [],
       popularMovies: []
-    })
-
-    MovieService.getMovieForMainUpComing('true')
-      .then((result) => {
-        state.upComingMovies = result.data
-      }).catch((err) => {
-        console.log(err)
-      })
-
-    MovieService.getMovieForMainLatest('true')
-      .then((result) => {
-        state.latestMovies = result.data
-      }).catch((err) => {
-        console.log(err)
-      })
-
-    MovieService.getMovieForMainTop('true')
-      .then((result) => {
-        state.topMovies = result.data
-      }).catch((err) => {
-        console.log(err)
-      })
-
-    MovieService.getMovieForMainPopular('true')
-      .then((result) => {
-        state.popularMovies = result.data
-      }).catch((err) => {
-        console.log(err)
-      })
-
-    return { state }
+    }
   },
+  setup() { },
   created() { },
-  mounted() { },
+  mounted() {
+    this.getMovieForMainUpComing()
+    this.getMovieForMainLatest()
+    this.getMovieForMainTop()
+    this.getMovieForMainPopular()
+  },
   unmounted() { },
-  methods: {}
+  methods: {
+    getMovieForMainUpComing() {
+      MovieService.getMovieForMainUpComing('true')
+        .then((result) => {
+          this.upComingMovies = result.data
+        }).catch((err) => {
+          console.log(err)
+        })
+    },
+
+    getMovieForMainLatest() {
+      MovieService.getMovieForMainLatest('true')
+        .then((result) => {
+          this.latestMovies = result.data
+        }).catch((err) => {
+          console.log(err)
+        })
+    },
+
+    getMovieForMainTop() {
+      MovieService.getMovieForMainTop('true')
+        .then((result) => {
+          this.topMovies = result.data
+        }).catch((err) => {
+          console.log(err)
+        })
+    },
+
+    getMovieForMainPopular() {
+      MovieService.getMovieForMainPopular('true')
+        .then((result) => {
+          this.popularMovies = result.data
+        }).catch((err) => {
+          console.log(err)
+        })
+    }
+  }
 }
 </script>
 <style scoped>

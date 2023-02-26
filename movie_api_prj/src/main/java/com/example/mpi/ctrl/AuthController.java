@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,7 +29,8 @@ import com.example.mpi.entity.RefreshToken;
 import com.example.mpi.entity.User;
 import com.example.mpi.payload.request.LoginRequest;
 import com.example.mpi.payload.request.SignUpRequest;
-import com.example.mpi.payload.response.UserInfoResponse;
+import com.example.mpi.payload.response.JwtResponse;
+import com.example.mpi.payload.response.TokenRefreshResponse;
 import com.example.mpi.security.jwt.JwtUtils;
 import com.example.mpi.security.jwt.exception.TokenRefreshException;
 import com.example.mpi.security.services.RefreshTokenService;
@@ -40,6 +42,10 @@ import com.example.mpi.validator.CheckUserIdValidator;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+	
+	// 리프레시 쿠키 이름
+	@Value("${myweb.mpi.jwtRefreshCookieName}")
+    private String jwtRefreshCookie;
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -63,7 +69,7 @@ public class AuthController {
 	CheckUserIdValidator checkUserIdValidator;
 	
 	@PostMapping("/login")
-	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest, Errors errors) {
+	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest, Errors errors, HttpServletResponse resp) {
 		
 		// 리퀘스트로 넘어온 값 밸리데이션 체크
 		if (errors.hasErrors()) {
@@ -71,7 +77,6 @@ public class AuthController {
 			return ResponseEntity.badRequest().body(validatorResult);
 		}
 		
-		// 아이디와 비밀번호로 security가 알아볼 수 있는 token 객체로 변환
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserId(), loginRequest.getUserPw()));
 		
@@ -79,7 +84,7 @@ public class AuthController {
 		
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		
-		ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+		String jwt = jwtUtils.generateJwtToken(userDetails);
 		
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
@@ -87,27 +92,33 @@ public class AuthController {
 		
 		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getUserId());
 		
-		ResponseCookie jwtRefreshCookie = jwtUtils.generateRefreshJwtCookie(refreshToken.getToken());
+		Cookie cookie = new Cookie(jwtRefreshCookie, refreshToken.getToken());
+		
+		cookie.setMaxAge(24 * 60 * 60);
+		cookie.setHttpOnly(true);
+		cookie.setPath("/");
+		
+		resp.addCookie(cookie);
+		
 		return ResponseEntity.ok()
-				.header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-				.header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
-				.body(new UserInfoResponse(userDetails.getUserId(), userDetails.getUserNickNm(), userDetails.isAdult(), roles));
+				.body(new JwtResponse(jwt ,userDetails.getUserId(), userDetails.getUserNickNm(), userDetails.isAdult(), roles));
 	}
 	
 	@PostMapping("/logout")
-	public ResponseEntity<?> logoutUser() {
+	public ResponseEntity<?> logoutUser(HttpServletResponse resp) {
 		Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principle.toString() != "anonymousUser") {
 			String userId = ((UserDetailsImpl) principle).getUserId();
 			refreshTokenService.deleteByUserId(userId);
 		}
 		
-		ResponseCookie jwtCookie = jwtUtils.getCleanJwtCookie();
-		ResponseCookie jwtRefreshCookie = jwtUtils.getCleanJwtRefreshCookie();
+		Cookie cookie = new Cookie(jwtRefreshCookie, null);
+		cookie.setMaxAge(0);
+		cookie.setPath("/");
+		
+		resp.addCookie(cookie);
 		
 		return ResponseEntity.ok()
-				.header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-				.header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
 				.body(null);
 	}
 	
@@ -151,19 +162,17 @@ public class AuthController {
 	
 	@PostMapping("/refreshtoken")
 	public ResponseEntity<?> refreshToken(HttpServletRequest request) {
-		System.out.println("리프레시토큰 주세염!!");
-		String refreshToken = jwtUtils.getJwtRefreshFromCookies(request);
+		System.out.println("리프레쉬 토큰 내놔");
+		String refreshToken = jwtUtils.getCookieValueByName(request, jwtRefreshCookie);
 		
 		if ((refreshToken != null) && (refreshToken.length() > 0)) {
 			return refreshTokenService.findByToken(refreshToken)
 					.map(refreshTokenService::verifyExpiration)
 					.map(RefreshToken::getUserId)
 					.map(userId -> {
-						ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userId);
+						String jwt = jwtUtils.generateTokenFromUsername(userId);
 						
-						return ResponseEntity.ok()
-								.header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-								.body(null);
+						return ResponseEntity.ok(new TokenRefreshResponse(jwt));
 					})
 					.orElseThrow(() -> new TokenRefreshException(refreshToken, "데이터베이스에 리프레쉬 토큰이 없습니다."));
 		}

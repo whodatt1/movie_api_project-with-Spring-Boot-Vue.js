@@ -12,7 +12,6 @@ export const auth = {
     login({ commit }, user) {
       return AuthService.login(user).then(
         user => {
-          console.log(user)
           commit('loginSuccess', user)
           return Promise.resolve(user)
         },
@@ -23,23 +22,30 @@ export const auth = {
       )
     },
     logout({ commit }) {
-      AuthService.logout()
-      commit('logout')
-    },
-    signup({ commit }, user) {
-      return AuthService.signup(user).then(
-        reponse => {
-          commit('signUpSuccess')
-          return Promise.reject(reponse.data)
+      return AuthService.logout().then(
+        response => {
+          commit('logout')
+          return Promise.resolve(response.data)
         },
         error => {
-          commit('signUpFailure')
           return Promise.reject(error)
         }
       )
     },
-    refreshToken({ commit }, token) {
-      commit('refreshToken', token)
+    signup({ commit }, user) {
+      return AuthService.signup(user).then(
+        response => {
+          commit('registerSuccess')
+          return Promise.resolve(response.data)
+        },
+        error => {
+          commit('registerFailure')
+          return Promise.reject(error)
+        }
+      )
+    },
+    refreshToken({ commit }, accessToken) {
+      commit('refreshToken', accessToken)
     }
   },
   mutations: {
@@ -55,15 +61,15 @@ export const auth = {
       state.status.loggedIn = false
       state.user = null
     },
-    refreshToken(state, token) {
+    registerSuccess(state) {
+      state.status.loggedIn = false
+    },
+    registerFailure(state) {
+      state.status.loggedIn = false
+    },
+    refreshToken(state, accessToken) {
       state.status.loggedIn = true
-      state.user = { ...state.user, token: token }
-    },
-    signUpSuccess(state) {
-      state.status.loggedIn = false
-    },
-    signUpFailure(state) {
-      state.status.loggedIn = false
+      state.user = { ...state.user, accessToken: accessToken }
     }
   }
 }

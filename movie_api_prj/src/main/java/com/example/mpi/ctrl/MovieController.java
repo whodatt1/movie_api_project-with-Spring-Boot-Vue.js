@@ -22,6 +22,7 @@ public class MovieController {
 	
 	@GetMapping("/main/upcoming/{adult}")
 	public ResponseEntity<List<Movie>> getMovieForMainUpComing(@PathVariable("adult") String adult) {
+		
 		try {
 			List<Movie> movieForMainUpComing = movieService.getMovieForMainUpComing(adult);
 			

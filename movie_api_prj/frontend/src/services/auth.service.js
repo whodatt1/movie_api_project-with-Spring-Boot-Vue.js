@@ -1,15 +1,15 @@
-import axios from 'axios'
 import TokenService from './token.service'
+import { instance } from './url'
 
 class AuthService {
   login(user) {
-    return axios
+    return instance
       .post('/auth/login', {
         userId: user.userId,
         userPw: user.userPw
       })
       .then((res) => {
-        if (res.data.token) {
+        if (res.data.accessToken) {
           TokenService.setUser(res.data)
         }
 
@@ -18,17 +18,24 @@ class AuthService {
   }
 
   logout() {
-    TokenService.removeUser()
+    return instance
+      .post('/auth/logout')
+      .then((res) => {
+        TokenService.removeUser()
+        return res.data
+      })
   }
 
   signup(user) {
-    return axios
+    return instance
       .post('/auth/signup', {
         userId: user.userId,
         userNickNm: user.userNickNm,
         userPw: user.userPw,
         userEmail: user.userEmail,
         adult: user.adult
+      }).then((res) => {
+        return res.data
       })
   }
 }
