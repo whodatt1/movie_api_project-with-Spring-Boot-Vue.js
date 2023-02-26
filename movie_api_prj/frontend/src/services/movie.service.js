@@ -1,20 +1,20 @@
-import axios from 'axios'
+import { instance } from './url'
 
 class MovieService {
   getMovieForMainUpComing(adult) {
-    return axios.get(`/movie/main/upcoming/${adult}`)
+    return instance.get(`/movie/main/upcoming/${adult}`)
   }
 
   getMovieForMainLatest(adult) {
-    return axios.get(`/movie/main/latest/${adult}`)
+    return instance.get(`/movie/main/latest/${adult}`)
   }
 
   getMovieForMainTop(adult) {
-    return axios.get(`/movie/main/top/${adult}`)
+    return instance.get(`/movie/main/top/${adult}`)
   }
 
   getMovieForMainPopular(adult) {
-    return axios.get(`/movie/main/popular/${adult}`)
+    return instance.get(`/movie/main/popular/${adult}`)
   }
 }
 
