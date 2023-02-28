@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mpi.mapper.AuthMapper">
-	<insert id="saveAuth" parameterType="Auth">
+	<insert id="saveAuth" parameterType="AuthDto">
 		INSERT INTO tb_user_auth
 		(
 			user_id,
@@ -13,7 +13,7 @@
 			#{auth}			
 		)
 	</insert>
-	<select id="findByUserId" parameterType="string" resultType="Auth">
+	<select id="findByUserId" parameterType="string" resultType="AuthDto">
 		SELECT * 
 			FROM tb_user_auth
 			WHERE user_id = #{userId}

@@ -4,16 +4,18 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.mpi.entity.Movie;
+import com.example.mpi.dto.MovieDto;
 
 @Mapper
 public interface MovieMapper {
 	
-	List<Movie> getMovieForMainUpComing(String adult);
+	List<MovieDto> getMovieForMainUpComing(String adult);
 	
-	List<Movie> getMovieForMainLatest(String adult);
+	List<MovieDto> getMovieForMainLatest(String adult);
 	
-	List<Movie> getMovieForMainTop(String adult);
+	List<MovieDto> getMovieForMainTop(String adult);
 	
-	List<Movie> getMovieForMainPopular(String adult);
+	List<MovieDto> getMovieForMainPopular(String adult);
+	
+	MovieDto getMovieDetail(String id);
 }

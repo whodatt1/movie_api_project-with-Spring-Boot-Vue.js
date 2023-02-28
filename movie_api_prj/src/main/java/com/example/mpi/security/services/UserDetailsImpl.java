@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.mpi.entity.User;
+import com.example.mpi.dto.UserDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -40,7 +40,7 @@ public class UserDetailsImpl implements UserDetails {
 	
 	private Collection<? extends GrantedAuthority> authorities;
 	
-	public static UserDetailsImpl build(User user) {
+	public static UserDetailsImpl build(UserDto user) {
 		
 		List<GrantedAuthority> authorities = user.getAuthList()
 			.stream()

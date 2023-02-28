@@ -13,12 +13,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.example.mpi.dto.GenreCdDto;
-import com.example.mpi.dto.MovieDto;
+import com.example.mpi.payload.response.GenreCdApiResponse;
+import com.example.mpi.payload.response.MovieApiResponse;
 
 import reactor.core.publisher.Mono;
 
-public class CustomGenreCdItemReader implements ItemReader<List<GenreCdDto>> {
+public class CustomGenreCdItemReader implements ItemReader<List<GenreCdApiResponse>> {
 
 	@Autowired
 	private WebClient webClient;
@@ -38,10 +38,10 @@ public class CustomGenreCdItemReader implements ItemReader<List<GenreCdDto>> {
 	private int cnt = 0;
 	
 	@Override
-	public List<GenreCdDto> read()
+	public List<GenreCdApiResponse> read()
 			throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
 		
-		GenreCdDto.ResponseMovieGenreApi genre = getMovieGenreList();
+		GenreCdApiResponse.ResponseMovieGenreApi genre = getMovieGenreList();
 		
 		// 호출이 실패한 경우는 break
 		if (!genre.requestSuccess()) {
@@ -52,13 +52,13 @@ public class CustomGenreCdItemReader implements ItemReader<List<GenreCdDto>> {
 		
 		// API 확인해보니 페이지넘버가 따로없어 한번 받은 후 NULL 값 반환하여 read() 멈춤
 		return cnt == 1 ? genre.getGenres().stream().map(genreInfo -> {
-			GenreCdDto genreDto = modelMapper.map(genreInfo, GenreCdDto.class);
+			GenreCdApiResponse genreDto = modelMapper.map(genreInfo, GenreCdApiResponse.class);
 			
 			return genreDto;	
 		}).collect(Collectors.toList()) : null;
 	}
 	
-	public GenreCdDto.ResponseMovieGenreApi getMovieGenreList() throws Exception {
+	public GenreCdApiResponse.ResponseMovieGenreApi getMovieGenreList() throws Exception {
 		return webClient
 				.get()
 				.uri(uriBuilder -> uriBuilder.scheme("https")
@@ -69,7 +69,7 @@ public class CustomGenreCdItemReader implements ItemReader<List<GenreCdDto>> {
 						.build())
 				.retrieve()
 				.onStatus(HttpStatus::isError, clientResponse -> Mono.error(new Exception()))
-				.bodyToMono(GenreCdDto.ResponseMovieGenreApi.class)
+				.bodyToMono(GenreCdApiResponse.ResponseMovieGenreApi.class)
 				.flux()
 				.toStream()
 				.findFirst().orElse(null);

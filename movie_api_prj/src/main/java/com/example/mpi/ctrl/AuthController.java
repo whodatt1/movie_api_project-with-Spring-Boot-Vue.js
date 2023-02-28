@@ -24,12 +24,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.mpi.entity.Auth;
-import com.example.mpi.entity.RefreshToken;
-import com.example.mpi.entity.User;
+import com.example.mpi.dto.AuthDto;
+import com.example.mpi.dto.RefreshTokenDto;
+import com.example.mpi.dto.UserDto;
 import com.example.mpi.payload.request.LoginRequest;
 import com.example.mpi.payload.request.SignUpRequest;
 import com.example.mpi.payload.response.JwtResponse;
+import com.example.mpi.payload.response.MessageResponse;
 import com.example.mpi.payload.response.TokenRefreshResponse;
 import com.example.mpi.security.jwt.JwtUtils;
 import com.example.mpi.security.jwt.exception.TokenRefreshException;
@@ -38,6 +39,8 @@ import com.example.mpi.security.services.UserDetailsImpl;
 import com.example.mpi.service.AuthService;
 import com.example.mpi.service.UserService;
 import com.example.mpi.validator.CheckUserIdValidator;
+
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 
 @RestController
 @RequestMapping("/auth")
@@ -90,7 +93,7 @@ public class AuthController {
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
 		
-		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getUserId());
+		RefreshTokenDto refreshToken = refreshTokenService.createRefreshToken(userDetails.getUserId());
 		
 		Cookie cookie = new Cookie(jwtRefreshCookie, refreshToken.getToken());
 		
@@ -135,7 +138,7 @@ public class AuthController {
 		}
 		
 		// 유저 정보
-		User user = User.builder()
+		UserDto user = UserDto.builder()
 						.userId(signUpRequest.getUserId())
 						.userNickNm(signUpRequest.getUserNickNm())
 						.userPw(encoder.encode(signUpRequest.getUserPw()))
@@ -146,9 +149,9 @@ public class AuthController {
 						.build();
 		
 		// 회원가입시 권한 받는 기능 현재 없으므로 무조건 ROLE_USER 로 세팅
-		List<Auth> userAuths = new ArrayList<Auth>();
+		List<AuthDto> userAuths = new ArrayList<AuthDto>();
 		
-		Auth userAuth = Auth.builder()
+		AuthDto userAuth = AuthDto.builder()
 							.userId(signUpRequest.getUserId())
 							.auth("ROLE_USER")
 							.build();
@@ -162,19 +165,19 @@ public class AuthController {
 	
 	@PostMapping("/refreshtoken")
 	public ResponseEntity<?> refreshToken(HttpServletRequest request) {
-		System.out.println("리프레쉬 토큰 내놔");
 		String refreshToken = jwtUtils.getCookieValueByName(request, jwtRefreshCookie);
 		
 		if ((refreshToken != null) && (refreshToken.length() > 0)) {
 			return refreshTokenService.findByToken(refreshToken)
 					.map(refreshTokenService::verifyExpiration)
-					.map(RefreshToken::getUserId)
+					.map(RefreshTokenDto::getUserId)
 					.map(userId -> {
 						String jwt = jwtUtils.generateTokenFromUsername(userId);
 						
 						return ResponseEntity.ok(new TokenRefreshResponse(jwt));
 					})
-					.orElseThrow(() -> new TokenRefreshException(refreshToken, "데이터베이스에 리프레쉬 토큰이 없습니다."));
+					.orElseThrow(() -> 
+					new TokenRefreshException(refreshToken, "데이터베이스에 리프레쉬 토큰이 없습니다."));
 		}
 		
 		return ResponseEntity.badRequest().body(null);

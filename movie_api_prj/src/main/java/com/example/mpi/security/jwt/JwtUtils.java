@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.WebUtils;
 
-import com.example.mpi.entity.User;
+import com.example.mpi.dto.UserDto;
 import com.example.mpi.security.services.UserDetailsImpl;
 
 import io.jsonwebtoken.ExpiredJwtException;

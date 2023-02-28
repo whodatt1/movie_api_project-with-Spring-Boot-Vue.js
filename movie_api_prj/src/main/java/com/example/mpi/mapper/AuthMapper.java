@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.mpi.entity.Auth;
+import com.example.mpi.dto.AuthDto;
 
 @Mapper
 public interface AuthMapper {
 	
-	List<Auth> findByUserId(String userId);
+	List<AuthDto> findByUserId(String userId);
 	
-	int saveAuth(Auth auth);
+	int saveAuth(AuthDto auth);
 	
 }

@@ -1,17 +1,16 @@
-package com.example.mpi.entity;
+package com.example.mpi.dto;
 
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class User {
+public class UserDto {
 	
 	private String userId;
 	
@@ -21,7 +20,7 @@ public class User {
 	
 	private String userEmail;
 	
-	private List<Auth> authList;
+	private List<AuthDto> authList;
 	
 	private long userPoint;
 	

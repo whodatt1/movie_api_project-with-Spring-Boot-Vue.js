@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.example.mpi.dto.MovieDto;
+import com.example.mpi.payload.response.MovieApiResponse;
 
 import reactor.core.publisher.Mono;
 
-public class CustomMovieItemReader implements ItemReader<List<MovieDto>> {
+public class CustomMovieItemReader implements ItemReader<List<MovieApiResponse>> {
 	
 	@Autowired
 	private WebClient webClient;
@@ -38,10 +38,10 @@ public class CustomMovieItemReader implements ItemReader<List<MovieDto>> {
 	private int currPage = 1;
 	
 	@Override
-	public List<MovieDto> read()
+	public List<MovieApiResponse> read()
 			throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
 		
-		MovieDto.ResponseMovieApi result = getMovieList(currPage);
+		MovieApiResponse.ResponseMovieApi result = getMovieList(currPage);
 		
 		// 호출이 실패한 경우는 break
 		if (!result.requestSuccess()) {
@@ -56,13 +56,13 @@ public class CustomMovieItemReader implements ItemReader<List<MovieDto>> {
 		}
 		
 		return result.getResults().stream().map(movieInfo -> {
-			MovieDto movieDto = modelMapper.map(movieInfo, MovieDto.class);
+			MovieApiResponse movieDto = modelMapper.map(movieInfo, MovieApiResponse.class);
 			
 			return movieDto;
 		}).collect(Collectors.toList());
 	}
 	
-	public MovieDto.ResponseMovieApi getMovieList(int currPage) throws Exception {
+	public MovieApiResponse.ResponseMovieApi getMovieList(int currPage) throws Exception {
 		return webClient
 				.get()
 				.uri(uriBuilder -> uriBuilder.scheme("https")
@@ -75,7 +75,7 @@ public class CustomMovieItemReader implements ItemReader<List<MovieDto>> {
 						.build())
 				.retrieve()
 				.onStatus(HttpStatus::isError, clientResponse -> Mono.error(new Exception()))
-				.bodyToMono(MovieDto.ResponseMovieApi.class)
+				.bodyToMono(MovieApiResponse.ResponseMovieApi.class)
 				.flux()
 				.toStream()
 				.findFirst().orElse(null);

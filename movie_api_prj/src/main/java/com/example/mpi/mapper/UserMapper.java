@@ -5,14 +5,14 @@ import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
-import com.example.mpi.entity.User;
+import com.example.mpi.dto.UserDto;
 
 @Mapper
 public interface UserMapper {
 	
-	int saveUser(User user);
+	int saveUser(UserDto user);
 	
-	User findByUserId(String userId);
+	UserDto findByUserId(String userId);
 	
 	boolean existsByUserId(String userId);
 	

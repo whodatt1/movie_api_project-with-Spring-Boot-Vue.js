@@ -1,48 +1,18 @@
 package com.example.mpi.dto;
 
-import java.util.List;
-
-import com.example.mpi.entity.GenreCd;
-
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
+@Data
+@Builder
 public class GenreCdDto {
 	
 	private long id;
+	
 	private String name;
 	
-	public GenreCd toEntity() {
-		
-		return GenreCd.builder()
-				.id(id)
-				.name(name)
-				.build();
-	}
+	private String dataRegAt;
 	
-	// MOVIE API에서 받아온 영화 장르 리스트 정보
-	@Setter
-	@Getter
-	public static class Genre {
-		private long id;
-		private String name;
-	}
+	private String dataModAt;
 	
-	@Data
-	public static class ResponseMovieGenreApi {
-		
-		private List<Genre> genres;
-		
-		public boolean requestSuccess() {
-			
-			if (genres != null && genres.size() != 0) {
-				return true;
-			}
-			
-			return false;
-		}
-	}
 }

@@ -6,9 +6,9 @@
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
     <typeAliases>
-    	<typeAlias type="com.example.mpi.entity.User" alias="User"/>
-    	<typeAlias type="com.example.mpi.entity.Movie" alias="Movie"/>
-    	<typeAlias type="com.example.mpi.entity.Auth" alias="Auth"/>
-    	<typeAlias type="com.example.mpi.entity.RefreshToken" alias="RefreshToken"/>
+    	<typeAlias type="com.example.mpi.dto.UserDto" alias="UserDto"/>
+    	<typeAlias type="com.example.mpi.dto.MovieDto" alias="MovieDto"/>
+    	<typeAlias type="com.example.mpi.dto.AuthDto" alias="AuthDto"/>
+    	<typeAlias type="com.example.mpi.dto.RefreshTokenDto" alias="RefreshTokenDto"/>
     </typeAliases>
 </configuration>

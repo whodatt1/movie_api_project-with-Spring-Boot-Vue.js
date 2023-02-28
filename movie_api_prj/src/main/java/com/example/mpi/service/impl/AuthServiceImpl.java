@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.mpi.entity.Auth;
+import com.example.mpi.dto.AuthDto;
 import com.example.mpi.mapper.AuthMapper;
 import com.example.mpi.service.AuthService;
 
@@ -16,10 +16,10 @@ public class AuthServiceImpl implements AuthService {
 	AuthMapper authMapper;
 
 	@Override
-	public int saveAuth(List<Auth> auths) {
+	public int saveAuth(List<AuthDto> auths) {
 		int result = 0;
 		
-		for (Auth auth : auths) {
+		for (AuthDto auth : auths) {
 			result += authMapper.saveAuth(auth);
 		}
 		

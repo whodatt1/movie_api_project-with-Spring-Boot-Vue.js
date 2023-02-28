@@ -2,9 +2,9 @@ package com.example.mpi.service;
 
 import java.util.List;
 
-import com.example.mpi.entity.Auth;
+import com.example.mpi.dto.AuthDto;
 
 public interface AuthService {
 	
-	int saveAuth(List<Auth> auths);
+	int saveAuth(List<AuthDto> auths);
 }

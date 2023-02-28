@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.mpi.entity.Movie;
+import com.example.mpi.dto.MovieDto;
 import com.example.mpi.service.MovieService;
 
 @RestController
@@ -20,11 +20,12 @@ public class MovieController {
 	@Autowired
 	MovieService movieService;
 	
+//	@GetMapping("/upcoming/{adult}")
 	@GetMapping("/main/upcoming/{adult}")
-	public ResponseEntity<List<Movie>> getMovieForMainUpComing(@PathVariable("adult") String adult) {
+	public ResponseEntity<List<MovieDto>> getMovieForMainUpComing(@PathVariable("adult") String adult) {
 		
 		try {
-			List<Movie> movieForMainUpComing = movieService.getMovieForMainUpComing(adult);
+			List<MovieDto> movieForMainUpComing = movieService.getMovieForMainUpComing(adult);
 			
 			if (movieForMainUpComing.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -38,9 +39,9 @@ public class MovieController {
 	}
 	
 	@GetMapping("/main/latest/{adult}")
-	public ResponseEntity<List<Movie>> getMovieForMainLatest(@PathVariable("adult") String adult) {
+	public ResponseEntity<List<MovieDto>> getMovieForMainLatest(@PathVariable("adult") String adult) {
 		try {
-			List<Movie> movieForMainLatest = movieService.getMovieForMainLatest(adult);
+			List<MovieDto> movieForMainLatest = movieService.getMovieForMainLatest(adult);
 			
 			if (movieForMainLatest.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -54,9 +55,9 @@ public class MovieController {
 	}
 	
 	@GetMapping("/main/top/{adult}")
-	public ResponseEntity<List<Movie>> getMovieForMainTop(@PathVariable("adult") String adult) {
+	public ResponseEntity<List<MovieDto>> getMovieForMainTop(@PathVariable("adult") String adult) {
 		try {
-			List<Movie> movieForMainTop = movieService.getMovieForMainTop(adult);
+			List<MovieDto> movieForMainTop = movieService.getMovieForMainTop(adult);
 			
 			if (movieForMainTop.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -70,9 +71,9 @@ public class MovieController {
 	}
 	
 	@GetMapping("/main/popular/{adult}")
-	public ResponseEntity<List<Movie>> getMovieForMainPopular(@PathVariable("adult") String adult) {
+	public ResponseEntity<List<MovieDto>> getMovieForMainPopular(@PathVariable("adult") String adult) {
 		try {
-			List<Movie> movieForMainPopuplar = movieService.getMovieForMainPopular(adult);
+			List<MovieDto> movieForMainPopuplar = movieService.getMovieForMainPopular(adult);
 			
 			if (movieForMainPopuplar.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -85,4 +86,19 @@ public class MovieController {
 		
 	}
 	
+	@GetMapping("/detail/{id}")
+	public ResponseEntity<MovieDto> getMovieDetail(@PathVariable("id") String id) {
+		try {
+			MovieDto movieDetail = movieService.getMovieDetail(id);
+			
+			if (movieDetail == null) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			
+			return new ResponseEntity<>(movieDetail, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
 }

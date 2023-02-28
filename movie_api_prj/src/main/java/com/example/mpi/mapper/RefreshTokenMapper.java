@@ -4,20 +4,20 @@ import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.mpi.entity.RefreshToken;
-import com.example.mpi.entity.User;
+import com.example.mpi.dto.RefreshTokenDto;
+import com.example.mpi.dto.UserDto;
 
 @Mapper
 public interface RefreshTokenMapper {
 	
-	Optional<RefreshToken> findByToken(String token);
+	Optional<RefreshTokenDto> findByToken(String token);
 	
-	RefreshToken findById(String id);
+	RefreshTokenDto findById(String id);
 	
-	int save(RefreshToken refreshToken);
+	int save(RefreshTokenDto refreshToken);
 	
-	int deleteByUser(User user);
+	int deleteByUser(UserDto user);
 	
-	int deleteByToken(RefreshToken refreshToken);
+	int deleteByToken(RefreshTokenDto refreshToken);
 	
 }

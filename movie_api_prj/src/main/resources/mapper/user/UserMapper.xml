@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mpi.mapper.UserMapper">
-    <select id="findByUserId" parameterType="string" resultType="User">
+    <select id="findByUserId" parameterType="string" resultType="UserDto">
     	SELECT * FROM tb_user
     	WHERE user_id = #{userId}
     </select>
@@ -13,7 +13,7 @@
     			WHERE user_id = #{userId} LIMIT 1
     	);
     </select>
-    <insert id="saveUser" parameterType="User">
+    <insert id="saveUser" parameterType="UserDto">
 		INSERT INTO tb_user
 		(
 			user_id,

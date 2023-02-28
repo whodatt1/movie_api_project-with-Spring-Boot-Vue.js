@@ -17,8 +17,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.example.mpi.dto.GenreCdDto;
 import com.example.mpi.dto.MovieDto;
-import com.example.mpi.entity.GenreCd;
-import com.example.mpi.entity.Movie;
+import com.example.mpi.payload.response.GenreCdApiResponse;
+import com.example.mpi.payload.response.MovieApiResponse;
 import com.example.mpi.processor.CustomGenreCdItemProcessor;
 import com.example.mpi.processor.CustomMovieItemProcessor;
 import com.example.mpi.reader.CustomGenreCdItemReader;
@@ -60,7 +60,7 @@ public class MovieApiJobConfig {
 	@Bean
 	public Step movieApiStep() {
 		return stepBuilderFactory.get("openApiStep")
-				.<List<MovieDto>, List<Movie>>chunk(1)
+				.<List<MovieApiResponse>, List<MovieDto>>chunk(1)
 				.reader(movieItemReader())
 				.processor(movieItemProcessor())
 				.writer(jdbcBatchMovieItemListWriter())
@@ -70,7 +70,7 @@ public class MovieApiJobConfig {
 	@Bean
 	public Step genreCdApiStep() {
 		return stepBuilderFactory.get("openApiStep")
-				.<List<GenreCdDto>, List<GenreCd>>chunk(1)
+				.<List<GenreCdApiResponse>, List<GenreCdDto>>chunk(1)
 				.reader(genreCdItemReader())
 				.processor(genreCdItemProcessor())
 				.writer(jdbcBatchGenreCdItemListWriter())
@@ -78,34 +78,34 @@ public class MovieApiJobConfig {
 	}
 
 	@Bean
-	public ItemReader<List<MovieDto>> movieItemReader() {
+	public ItemReader<List<MovieApiResponse>> movieItemReader() {
 		return new CustomMovieItemReader();
 	}
 	
 	@Bean
-	public ItemReader<List<GenreCdDto>> genreCdItemReader() {
+	public ItemReader<List<GenreCdApiResponse>> genreCdItemReader() {
 		return new CustomGenreCdItemReader();
 	}
 	
 	@Bean
-	public ItemProcessor<List<MovieDto>, List<Movie>> movieItemProcessor() {
+	public ItemProcessor<List<MovieApiResponse>, List<MovieDto>> movieItemProcessor() {
 		return new CustomMovieItemProcessor();
 	}
 	
 	@Bean
-	public ItemProcessor<List<GenreCdDto>, List<GenreCd>> genreCdItemProcessor() {
+	public ItemProcessor<List<GenreCdApiResponse>, List<GenreCdDto>> genreCdItemProcessor() {
 		return new CustomGenreCdItemProcessor();
 	}
 	
-	public JdbcBatchMovieItemListWriter<Movie> jdbcBatchMovieItemListWriter() {
-		JdbcBatchItemWriter<Movie> writer = new JdbcBatchItemWriter<>();
+	public JdbcBatchMovieItemListWriter<MovieDto> jdbcBatchMovieItemListWriter() {
+		JdbcBatchItemWriter<MovieDto> writer = new JdbcBatchItemWriter<>();
 		writer.setDataSource(dataSource);
 		writer.setJdbcTemplate(new NamedParameterJdbcTemplate(dataSource));
 		return new JdbcBatchMovieItemListWriter<>(writer);
 	}
 	
-	public JdbcBatchGenreCdItemListWriter<GenreCd> jdbcBatchGenreCdItemListWriter() {
-		JdbcBatchItemWriter<GenreCd> writer = new JdbcBatchItemWriter<>();
+	public JdbcBatchGenreCdItemListWriter<GenreCdDto> jdbcBatchGenreCdItemListWriter() {
+		JdbcBatchItemWriter<GenreCdDto> writer = new JdbcBatchItemWriter<>();
 		writer.setDataSource(dataSource);
 		writer.setJdbcTemplate(new NamedParameterJdbcTemplate(dataSource));
 		return new JdbcBatchGenreCdItemListWriter<>(writer);

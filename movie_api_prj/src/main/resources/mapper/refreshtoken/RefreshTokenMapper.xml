@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mpi.mapper.RefreshTokenMapper">
-    <select id="findByToken" parameterType="string" resultType="RefreshToken">
+    <select id="findByToken" parameterType="string" resultType="RefreshTokenDto">
     	SELECT 
     		* 
     		FROM tb_refresh_token
     		WHERE token = #{token}
     </select>
-    <select id="findById" parameterType="string" resultType="RefreshToken">
+    <select id="findById" parameterType="string" resultType="RefreshTokenDto">
     	SELECT 
     		* 
     		FROM tb_refresh_token
     		WHERE id = #{id}
     </select>
-    <delete id="deleteByUser" parameterType="User">
+    <delete id="deleteByUser" parameterType="UserDto">
     	DELETE 
     		FROM tb_refresh_token
     		WHERE token = #{userId}
     </delete>
-    <delete id="deleteByToken" parameterType="User">
+    <delete id="deleteByToken" parameterType="RefreshTokenDto">
     	DELETE 
     		FROM tb_refresh_token
     		WHERE id = #{id}
     </delete>
-    <insert id="save" parameterType="RefreshToken" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
+    <insert id="save" parameterType="RefreshTokenDto" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
     	INSERT INTO tb_refresh_token
     	(	
     		user_id,

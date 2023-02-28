@@ -16,6 +16,10 @@ class MovieService {
   getMovieForMainPopular(adult) {
     return instance.get(`/movie/main/popular/${adult}`)
   }
+
+  getMovieDetail(id) {
+    return instance.get(`/movie/detail/${id}`)
+  }
 }
 
 export default new MovieService()

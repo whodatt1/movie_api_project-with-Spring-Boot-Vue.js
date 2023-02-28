@@ -6,7 +6,7 @@
     <div>
       <div class="scroll-row mb-5">
         <div class="scroll-card" v-for="(item, idx) in upComingMovies" :key="idx">
-          <img :src="'https://image.tmdb.org/t/p/original' + item.posterPath" class="card-img-top">
+          <router-link v-bind:to="`/moviedetail/${item.id}`"><img :src="'https://image.tmdb.org/t/p/original' + item.posterPath" class="card-img-top"></router-link>
           <div class="card-body">
             <h5 class="card-title">{{ item.title }}</h5>
             <p class="card-text"><small class="text-muted">{{ item.releaseDate }}</small></p>
@@ -20,7 +20,7 @@
     <div>
       <div class="scroll-row mb-5">
         <div class="scroll-card" v-for="(item, idx) in latestMovies" :key="idx">
-          <img :src="'https://image.tmdb.org/t/p/original' + item.posterPath" class="card-img-top">
+          <router-link v-bind:to="`/moviedetail/${item.id}`"><img :src="'https://image.tmdb.org/t/p/original' + item.posterPath" class="card-img-top"></router-link>
           <div class="card-body">
             <h5 class="card-title">{{ item.title }}</h5>
             <p class="card-text"><small class="text-muted">{{ item.releaseDate }}</small></p>
@@ -34,7 +34,7 @@
     <div>
       <div class="scroll-row mb-5">
         <div class="scroll-card" v-for="(item, idx) in popularMovies" :key="idx">
-          <img :src="'https://image.tmdb.org/t/p/original' + item.posterPath" class="card-img-top">
+          <router-link v-bind:to="`/moviedetail/${item.id}`"><img :src="'https://image.tmdb.org/t/p/original' + item.posterPath" class="card-img-top"></router-link>
           <div class="card-body">
             <h5 class="card-title">{{ item.title }}</h5>
             <p class="card-text"><small class="text-muted">{{ item.releaseDate }}</small></p>
@@ -48,7 +48,7 @@
     <div>
       <div class="scroll-row mb-5">
         <div class="scroll-card" v-for="(item, idx) in topMovies" :key="idx">
-          <img :src="'https://image.tmdb.org/t/p/original' + item.posterPath" class="card-img-top">
+          <router-link v-bind:to="`/moviedetail/${item.id}`"><img :src="'https://image.tmdb.org/t/p/original' + item.posterPath" class="card-img-top"></router-link>
           <div class="card-body">
             <h5 class="card-title">{{ item.title }}</h5>
             <p class="card-text"><small class="text-muted">{{ item.releaseDate }}</small></p>
@@ -124,7 +124,6 @@ export default {
   text-align: left;
   margin-left: 20px;
 }
-
 .scroll-row {
   align-items: stretch;
   display: flex;

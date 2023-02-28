@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
-import com.example.mpi.entity.User;
+import com.example.mpi.dto.UserDto;
 import com.example.mpi.mapper.UserMapper;
 import com.example.mpi.service.UserService;
 
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public int saveUser(User user) {
+	public int saveUser(UserDto user) {
 		return userRepository.saveUser(user);
 	}
 
