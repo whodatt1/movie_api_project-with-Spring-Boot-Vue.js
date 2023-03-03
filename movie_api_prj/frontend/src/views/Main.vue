@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" style="margin-top: 3rem;">
     <div>
       <h4 class="movie-card-header">개봉 예정작</h4>
     </div>

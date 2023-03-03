@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mpi.mapper.GenreCdMapper">
+    <select id="getGenreCdList" parameterType="hashmap" resultType="hashmap">
+    	SELECT * FROM tb_movie_genre_cd
+			where 1=1
+			AND id IN 
+			<foreach collection="genreIdArr" item="item" index="index" separator="," open="(" close=")">
+				#{item}
+			</foreach>
+    </select>
+    <select id="getGenreCdListAll" parameterType="hashmap" resultType="hashmap">
+    	SELECT * FROM tb_movie_genre_cd
+    </select>
+</mapper>

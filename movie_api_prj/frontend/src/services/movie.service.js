@@ -20,6 +20,18 @@ class MovieService {
   getMovieDetail(id) {
     return instance.get(`/movie/detail/${id}`)
   }
+
+  getMovieListAll(pageNo) {
+    return instance.get(`/movie/list/${pageNo}`)
+  }
+
+  getMovieListAllForResult(pageNo, genre, sortBy) {
+    return instance.get(`/movie/list/${pageNo}/${genre}/${sortBy}`)
+  }
+
+  getMovieListAllForResultTitle(pageNo, title) {
+    return instance.get(`/movie/list/${pageNo}/${title}`)
+  }
 }
 
 export default new MovieService()

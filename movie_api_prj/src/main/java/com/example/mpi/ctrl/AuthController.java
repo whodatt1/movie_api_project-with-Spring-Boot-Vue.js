@@ -79,22 +79,24 @@ public class AuthController {
 			Map<String, String> validatorResult = userService.validateHandling(errors);
 			return ResponseEntity.badRequest().body(validatorResult);
 		}
-		
+		System.out.println("여기");
+		System.out.println(loginRequest.getUserId());
+		System.out.println(loginRequest.getUserPw());
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserId(), loginRequest.getUserPw()));
-		
+		System.out.println("여기2");
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		
+		System.out.println("여기3");
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-		
+		System.out.println("여기4");
 		String jwt = jwtUtils.generateJwtToken(userDetails);
-		
+		System.out.println("여기5");
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
-		
+		System.out.println("여기6");
 		RefreshTokenDto refreshToken = refreshTokenService.createRefreshToken(userDetails.getUserId());
-		
+		System.out.println("여기7");
 		Cookie cookie = new Cookie(jwtRefreshCookie, refreshToken.getToken());
 		
 		cookie.setMaxAge(24 * 60 * 60);

@@ -5,7 +5,7 @@
 			<Pattern>%d %5p [%c] %m%n</Pattern>
 		</encoder>
 	</appender>
-	<logger name="com.myweb.board" level="INFO" appender-ref="console"/>
+	<logger name="com.example.mpi" level="INFO" appender-ref="console"/>
 	<logger name="jdbc" level="OFF"/>
 	<logger name="jdbc.connection" level="OFF"/>
 	<logger name="jdbc.audit" level="OFF"/>

@@ -1,8 +1,12 @@
 import { instance } from './url'
 
 class GenreService {
-  getGenreCd() {
-    return instance.get('/genre/cd')
+  getGenreCd(genreIds) {
+    return instance.get(`/genre/cd/${genreIds}`)
+  }
+
+  getGenreCdAll() {
+    return instance.get('/genre/cd/')
   }
 }
 

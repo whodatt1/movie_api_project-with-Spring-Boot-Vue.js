@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.mpi.dto.MovieDto;
+import com.example.mpi.paging.Criteria;
+import com.example.mpi.paging.handler.PagingHandler;
 import com.example.mpi.service.MovieService;
 
 @RestController
@@ -100,5 +102,58 @@ public class MovieController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
+	}
+	
+	@GetMapping("/list/{pageNo}")
+	public ResponseEntity<PagingHandler> getMovieListAll(@PathVariable("pageNo") int pageNo) {
+		
+		try {
+			Criteria criteria = new Criteria(pageNo, 20);
+			PagingHandler movieListAll = movieService.getMovieListAll(criteria);
+			if (movieListAll.getMovieList().isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			
+			return new ResponseEntity<>(movieListAll, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/list/{pageNo}/{genre}/{sortBy}")
+	public ResponseEntity<PagingHandler> getMovieListAllForResult(@PathVariable("pageNo") int pageNo, @PathVariable(name = "genre", required = false) String genre, @PathVariable(name = "sortBy", required = false) String sortBy) {
+		
+		try {
+			Criteria criteria = new Criteria(pageNo, 20);
+			criteria.setGenre(genre);
+			criteria.setSortBy(sortBy);
+			
+			PagingHandler movieListAll = movieService.getMovieListAll(criteria);
+			if (movieListAll.getMovieList().isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			
+			return new ResponseEntity<>(movieListAll, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/list/{pageNo}/{title}")
+	public ResponseEntity<PagingHandler> getMovieListAllForResultTitle(@PathVariable("pageNo") int pageNo, @PathVariable(name = "title", required = false) String title) {
+		
+		try {
+			Criteria criteria = new Criteria(pageNo, 20);
+			criteria.setTitle(title);
+			
+			PagingHandler movieListAll = movieService.getMovieListAll(criteria);
+			if (movieListAll.getMovieList().isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			
+			return new ResponseEntity<>(movieListAll, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }

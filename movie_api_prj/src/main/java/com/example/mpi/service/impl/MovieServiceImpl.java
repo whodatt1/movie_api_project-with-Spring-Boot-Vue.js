@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.mpi.dto.MovieDto;
 import com.example.mpi.mapper.MovieMapper;
+import com.example.mpi.paging.Criteria;
+import com.example.mpi.paging.handler.PagingHandler;
 import com.example.mpi.service.MovieService;
 
 @Service
@@ -38,6 +40,13 @@ public class MovieServiceImpl implements MovieService{
 	@Override
 	public MovieDto getMovieDetail(String id) {
 		return movieMapper.getMovieDetail(id);
+	}
+
+	@Override
+	public PagingHandler getMovieListAll(Criteria criteria) {
+		List<MovieDto> movieList = movieMapper.getMovieListAll(criteria);
+		int totalCount = movieMapper.getMovieTotalCount(criteria);
+		return new PagingHandler(criteria, totalCount, movieList);
 	}
 	
 }

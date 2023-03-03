@@ -3,11 +3,11 @@
 <mapper namespace="com.example.mpi.mapper.MovieMapper">
     <select id="getMovieForMainUpComing" parameterType="string" resultType="MovieDto">
     	SELECT * FROM tb_movie 
-			where 1=1
+			WHERE 1=1
 			AND poster_path IS NOT NULL
 			AND backdrop_path IS NOT NULL
 			AND original_language NOT IN ('ko','ja')
-			AND overview IS NOT NULL
+			AND overview != ''
 			<if test="adult == 'false' or adult == ''">
 				AND adult = 0
 			</if>
@@ -17,12 +17,12 @@
     </select>
     <select id="getMovieForMainLatest" parameterType="string" resultType="MovieDto">
     	SELECT * FROM tb_movie 
-			where 1=1
+			WHERE 1=1
 			AND poster_path IS NOT NULL
 			AND backdrop_path IS NOT NULL
 			AND release_date <![CDATA[<=]]> now()
 			AND original_language NOT IN ('ko','ja')
-			AND overview IS NOT NULL
+			AND overview != ''
 			<if test="adult == 'false' or adult == ''">
 				AND adult = 0
 			</if>
@@ -32,12 +32,12 @@
     </select>
     <select id="getMovieForMainTop" parameterType="string" resultType="MovieDto">
     	SELECT * FROM tb_movie 
-			where 1=1
+			WHERE 1=1
 			AND poster_path IS NOT NULL
 			AND backdrop_path IS NOT NULL
 			AND release_date <![CDATA[<=]]> now()
 			AND original_language NOT IN ('ko','ja')
-			AND overview IS NOT NULL
+			AND overview != ''
 			<if test="adult == 'false' or adult == ''">
 				AND adult = 0
 			</if>
@@ -47,12 +47,12 @@
     </select>
     <select id="getMovieForMainPopular" parameterType="string" resultType="MovieDto">
     	SELECT * FROM tb_movie 
-			where 1=1
+			WHERE 1=1
 			AND poster_path IS NOT NULL
 			AND backdrop_path IS NOT NULL
 			AND release_date <![CDATA[<=]]> now()
 			AND original_language NOT IN ('ko','ja')
-			AND overview IS NOT NULL
+			AND overview != ''
 			<if test="adult == 'false' or adult == ''">
 				AND adult = 0
 			</if>
@@ -62,7 +62,58 @@
     </select>
     <select id="getMovieDetail" parameterType="string" resultType="MovieDto">
     	SELECT * FROM tb_movie 
-			where 1=1
+			WHERE 1=1
 			AND id = #{id}
+    </select>
+    <select id="getMovieListAll" parameterType="Criteria" resultType="MovieDto">
+    	SELECT * FROM tb_movie 
+			WHERE 1=1
+			AND poster_path IS NOT NULL
+			AND backdrop_path IS NOT NULL
+			AND original_language NOT IN ('ko','ja')
+			AND overview != ''
+			<if test="genre != null and genre != '' and genre != 'none'">
+				AND genre_ids LIKE CONCAT('%', ',', #{genre}, ',', '%')
+			</if>
+			<if test="title != null and title != '' and title != 'none'">
+				AND title LIKE CONCAT('%', #{title}, '%')
+			</if>
+			<if test="sortBy != null and sortBy != '' and sortBy != 'none'">
+				<choose>
+					<when test="sortBy == 'popDesc'">
+						ORDER BY popularity DESC
+					</when>
+					<when test="sortBy == 'popAsc'">
+						ORDER BY popularity ASC
+					</when>
+					<when test="sortBy == 'voteDesc'">
+						ORDER BY vote_average DESC
+					</when>
+					<when test="sortBy == 'voteAsc'">
+						ORDER BY vote_average ASC
+					</when>
+					<when test="sortBy == 'relDesc'">
+						ORDER BY release_date DESC
+					</when>
+					<when test="sortBy == 'relAsc'">
+						ORDER BY release_date ASC
+					</when>
+				</choose>
+			</if>
+			LIMIT 0, #{forMoreBtnQty} 
+    </select>
+    <select id="getMovieTotalCount" parameterType="Criteria" resultType="int">
+    	SELECT count(*) FROM tb_movie 
+			WHERE 1=1
+			AND poster_path IS NOT NULL
+			AND backdrop_path IS NOT NULL
+			AND original_language NOT IN ('ko','ja')
+			AND overview != ''
+			<if test="genre != null and genre != '' and genre != 'none'">
+				AND genre_ids LIKE CONCAT('%', ',', #{genre}, ',', '%')
+			</if>
+			<if test="title != null and title != '' and title != 'none'">
+				AND title LIKE CONCAT('%', #{title}, '%')
+			</if>
     </select>
 </mapper>

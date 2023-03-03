@@ -1,7 +1,5 @@
 package com.example.mpi.dto;
 
-import java.time.Instant;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,14 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RefreshTokenDto {
+public class FileDto {
 	
-	private long id;
-	
-	private String userId;
-	
-	private String token;
-	
-	private Instant expiryDate;
+	private String uuid;
+	private int commId;
+	private String saveDir;
+	private String fileName;
+	private int fileType;
+	private long fileSize;
+	private String regAt;
 	
 }
