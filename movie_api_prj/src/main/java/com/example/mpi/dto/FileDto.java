@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class FileDto {
 	
 	private String uuid;
-	private int commId;
+	private long commId;
 	private String saveDir;
 	private String fileName;
 	private int fileType;

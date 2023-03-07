@@ -4,7 +4,7 @@
     <table class="table table-hover mb-3" style="table-layout: fixed">
       <thead>
         <tr>
-          <th scope="col" style="width: 5%; text-align: center;">번호</th>
+          <th scope="col" style="width: 8%; text-align: center;">번호</th>
           <th scope="col" style="width: 5%; text-align: center;">종류</th>
           <th scope="col" style="width: 55%; text-align: center;">제목</th>
           <th scope="col" style="width: 8%; text-align: center;">글쓴이</th>
@@ -14,51 +14,124 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row" style="width: 5%; text-align: center;">1</th>
-          <th scope="row" style="width: 5%; text-align: center;">공지</th>
-          <th scope="row" style="width: 60%;">
-            <span class="comu-title">지건 오지게마마마마마마마마마마마마마마마마마마마aasssssssssssssssssssssssssssssssssssssss</span>
-            <span>[1]</span>
+        <tr v-for="(item, idx) in communityList" :key="idx">
+          <th scope="row" style="width: 8%; text-align: center;">{{ item.id }}</th>
+          <th scope="row" style="width: 5%; text-align: center;">{{ item.category === 'normal' ? '일반' : '공지' }}</th>
+          <th scope="row" style="width: 55%;">
+            <div class="div-wrap">
+              <div class="title-div">
+                <router-link :to="`/communitydetail?id=${item.id}&pageNo=${params.pageNo}&type=${params.type}&keyWord=${params.keyWord}`" class="comu-title">{{ item.title }}</router-link>
+              </div>
+              <span v-if="item.replyCount !== 0" class="reply">[{{ item.replyCount }}]</span>
+              <span v-if="item.file"><i class="fa-sharp fa-regular fa-image"></i></span>
+            </div>
           </th>
-          <th scope="row" style="width: 8%; text-align: center;">1</th>
-          <th scope="row" style="width: 8%; text-align: center;">1</th>
-          <th scope="row" style="width: 8%; text-align: center;">1</th>
-          <th scope="row" style="width: 8%; text-align: center;">1</th>
+          <th scope="row" style="width: 8%; text-align: center;">{{ item.writerId }}</th>
+          <th scope="row" style="width: 8%; text-align: center;">{{ app.getRegDtForCommunity(item.regDt) }}</th>
+          <th scope="row" style="width: 8%; text-align: center;">{{ item.views }}</th>
+          <th scope="row" style="width: 8%; text-align: center;">{{ item.vote }}</th>
         </tr>
       </tbody>
     </table>
     <div class="text-end mb-3">
       <router-link to="/communitycreate"><button class="btn btn-primary btn-custom">글쓰기</button></router-link>
     </div>
+    <ul class="pagination justify-content-center py-5">
+      <li class="page-item" v-if="prev">
+        <router-link :to="`/community?pageNo=${startPage - 1}&type=${params.type}&keyWord=${params.keyWord}`" class="page-link">Prev</router-link>
+      </li>
+      <li :class="`page-item ${ index == params.pageNo ? 'active' : '' }`" aria-current="page" v-for="index in range(startPage, endPage)" :key="index">
+        <router-link :to="`/community?pageNo=${index}&type=${params.type}&keyWord=${params.keyWord}`" class="page-link" style="cursor: pointer;">{{ index }}</router-link>
+      </li>
+      <li class="page-item" v-if="next">
+        <router-link :to="`/community?pageNo=${endPage + 1}&type=${params.type}&keyWord=${params.keyWord}`" class="page-link">Next</router-link>
+      </li>
+</ul>
     <div class="text-center mb-3">
-      <select class="mb-3 form-select-custom">
-        <option value="dd">제목</option>
-        <option value="dd">내용</option>
-        <option value="dd">글쓴이</option>
-        <option value="dd">종류</option>
+      <select class="mb-3 form-select-custom" v-model="params.type">
+        <option value="title">제목</option>
+        <option value="content">내용</option>
+        <option value="writerId">글쓴이</option>
       </select>
-      <input class="form-control-custom" type="text">
-      <button class="btn btn-success btn-custom">검색</button>
+      <input class="form-control-custom" type="text" v-model="params.keyWord">
+      <button class="btn btn-success btn-custom" @click="getCommunityAll">검색</button>
     </div>
   </div>
 </template>
 <script>
+import CommunityService from '@/services/community.service'
+import app from '@/js/app'
 export default {
   components: {},
   data() {
     return {
-      sampleData: ''
+      params: {
+        pageNo: '',
+        type: 'title',
+        keyWord: ''
+      },
+      communityList: [],
+      startPage: '',
+      endPage: '',
+      next: '',
+      prev: ''
     }
   },
-  setup() {},
+  setup() {
+    return { app }
+  },
   created() {},
-  mounted() {},
+  mounted() {
+    if (this.$route.query.type) {
+      this.params.type = this.$route.query.type
+    }
+    if (this.$route.query.keyWord) {
+      this.params.keyWord = this.$route.query.keyWord
+    }
+    if (this.$route.query.pageNo) {
+      this.params.pageNo = this.$route.query.pageNo
+    }
+    this.getCommunityAll(this.params)
+  },
   unmounted() {},
-  methods: {}
+  methods: {
+    range(start, end) {
+      return Array(end - start + 1).fill().map((val, i) => start + i)
+    },
+    getCommunityAll() {
+      const params = this.params
+
+      CommunityService.getCommunityAll(params)
+        .then((result) => {
+          this.startPage = result.data.startPage
+          this.endPage = result.data.endPage
+          this.next = result.data.next
+          this.prev = result.data.prev
+          this.communityList = result.data.communityList
+        }).catch((err) => {
+          console.log(err)
+        })
+    }
+  }
 }
 </script>
 <style scoped>
+.reply {
+  color: coral;
+}
+.div-wrap {
+  display: flex;
+  overflow: hidden;
+  width: 95%;
+}
+.title-div {
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+  width: auto;
+  overflow: hidden;
+}
 .btn-custom {
   padding: 0.375rem 0.75rem;
   font-size: 1rem;
@@ -99,13 +172,7 @@ export default {
      -moz-appearance: none;
           appearance: none;
 }
-span {
-  display: inline-block;
-}
 .comu-title {
-  width: 580px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  vertical-align: baseline;
 }
 </style>

@@ -6,7 +6,6 @@ export function setupInterceptors(instance) {
   instance.interceptors.request.use(
     (config) => {
       const accessToken = TokenService.getLocalAccessToken()
-      console.log(accessToken)
       if (accessToken) {
         config.headers.Authorization = 'Bearer ' + accessToken
       }
@@ -28,26 +27,38 @@ export function setupInterceptors(instance) {
         if (err.response.status === 401 && !originalConfig._retry) {
           originalConfig._retry = true
 
-          const { data } = await instance.post('/auth/refreshtoken')
+          try {
+            const { data } = await instance.post('/auth/refreshtoken')
 
-          if (data) {
-            if (data.accessToken) {
-              TokenService.updateLocalAccessToken(data.accessToken)
-              originalConfig.headers.Authorization = 'Bearer ' + data.accessToken
+            if (data) {
+              if (data.accessToken) {
+                TokenService.updateLocalAccessToken(data.accessToken)
+                originalConfig.headers.Authorization = 'Bearer ' + data.accessToken
+              }
+
+              if (data.statusCode === 403) {
+                store.dispatch('auth/logout').then(() => {
+                  alert('권한이 만료되었습니다. 다시 로그인 해주세요.')
+                  router.push({ path: '/login' })
+                },
+                (error) => {
+                  console.log(error)
+                })
+              }
             }
 
-            if (data.statusCode === 403) {
-              store.dispatch('auth/logout').then(() => {
-                alert('권한이 만료되었습니다. 다시 로그인 해주세요.')
-                router.push({ path: '/login' })
-              },
-              (error) => {
-                console.log(error)
-              })
-            }
+            return instance(originalConfig)
+          } catch (error) {
+            console.log(error)
+            store.dispatch('auth/logout').then(() => {
+              alert('권한이 만료되었습니다. 다시 로그인 해주세요.')
+              router.push({ path: '/login' })
+            },
+            (error) => {
+              console.log(error)
+            })
+            return Promise.reject(error)
           }
-
-          return instance(originalConfig)
         }
         return Promise.reject(err)
       }

@@ -30,7 +30,6 @@ import com.example.mpi.dto.UserDto;
 import com.example.mpi.payload.request.LoginRequest;
 import com.example.mpi.payload.request.SignUpRequest;
 import com.example.mpi.payload.response.JwtResponse;
-import com.example.mpi.payload.response.MessageResponse;
 import com.example.mpi.payload.response.TokenRefreshResponse;
 import com.example.mpi.security.jwt.JwtUtils;
 import com.example.mpi.security.jwt.exception.TokenRefreshException;
@@ -39,8 +38,6 @@ import com.example.mpi.security.services.UserDetailsImpl;
 import com.example.mpi.service.AuthService;
 import com.example.mpi.service.UserService;
 import com.example.mpi.validator.CheckUserIdValidator;
-
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 
 @RestController
 @RequestMapping("/auth")
@@ -79,24 +76,15 @@ public class AuthController {
 			Map<String, String> validatorResult = userService.validateHandling(errors);
 			return ResponseEntity.badRequest().body(validatorResult);
 		}
-		System.out.println("여기");
-		System.out.println(loginRequest.getUserId());
-		System.out.println(loginRequest.getUserPw());
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserId(), loginRequest.getUserPw()));
-		System.out.println("여기2");
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		System.out.println("여기3");
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-		System.out.println("여기4");
 		String jwt = jwtUtils.generateJwtToken(userDetails);
-		System.out.println("여기5");
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
-		System.out.println("여기6");
 		RefreshTokenDto refreshToken = refreshTokenService.createRefreshToken(userDetails.getUserId());
-		System.out.println("여기7");
 		Cookie cookie = new Cookie(jwtRefreshCookie, refreshToken.getToken());
 		
 		cookie.setMaxAge(24 * 60 * 60);

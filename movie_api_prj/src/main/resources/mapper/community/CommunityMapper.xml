@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mpi.mapper.CommunityMapper">
+	<insert id="saveCommunity" parameterType="CommunityDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		INSERT INTO tb_community
+		(
+			category,
+			title,
+			writer_id,
+			content,
+			del,
+			file,
+			views,
+			vote,
+			reg_dt,
+			reg_user_id,
+			mod_dt,
+			mod_user_id,
+			reply_count
+		)
+		VALUES
+		(
+			#{category},
+			#{title},
+			#{writerId},
+			#{content},
+			0,
+			#{file},
+			0,
+			0,
+			now(),
+			#{writerId},
+			now(),
+			#{writerId},
+			0
+		)
+	</insert>
+	<select id="getCommunityListAll" parameterType="Criteria" resultType="CommunityDto">
+    	SELECT * FROM tb_community 
+			WHERE 1=1
+			<if test="type != null and type != ''">
+				<choose>
+					<when test="type == 'title'">
+						<if test="keyWord != null and keyWord != ''">
+							AND title LIKE CONCAT('%', #{keyWord}, '%')
+						</if>
+					</when>
+					<when test="type == 'content'">
+						<if test="keyWord != null and keyWord != ''">
+							AND content LIKE CONCAT('%', #{keyWord}, '%')
+						</if>
+					</when>
+					<otherwise>
+						<if test="keyWord != null and keyWord != ''">
+							AND writer_id LIKE CONCAT('%', #{keyWord}, '%')
+						</if>
+					</otherwise>
+				</choose>
+			</if>
+			AND category = 'normal'
+			ORDER BY reg_dt DESC
+			LIMIT #{pageStart}, #{qty}
+    </select>
+	<select id="getCommunityTotalCount" parameterType="Criteria" resultType="int">
+		SELECT count(*) FROM tb_community
+			WHERE 1=1
+			<if test="type != null and type != ''">
+				<choose>
+					<when test="type == 'title'">
+						<if test="keyWord != null and keyWord != ''">
+							AND title LIKE CONCAT('%', #{keyWord}, '%')
+						</if>
+					</when>
+					<when test="type == 'content'">
+						<if test="keyWord != null and keyWord != ''">
+							AND content LIKE CONCAT('%', #{keyWord}, '%')
+						</if>
+					</when>
+					<otherwise>
+						<if test="keyWord != null and keyWord != ''">
+							AND writer_id LIKE CONCAT('%', #{keyWord}, '%')
+						</if>
+					</otherwise>
+				</choose>
+			</if>
+			AND category = 'normal'
+	</select>
+	<select id="getCommunityDetail" parameterType="string" resultType="CommunityDto">
+		SELECT * FROM tb_community
+			WHERE 1=1
+			AND id = #{id}
+	</select>
+</mapper>

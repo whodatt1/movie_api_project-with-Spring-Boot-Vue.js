@@ -63,9 +63,15 @@ public class SecurityConfig {
 		http.cors().and().csrf().disable()
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.authorizeRequests().antMatchers("/auth/**").permitAll()
+			.authorizeRequests().antMatchers("/").permitAll()
+			.antMatchers("/index.html").permitAll()
+			.antMatchers("/css/**").permitAll()
+			.antMatchers("/js/**").permitAll()
+			.antMatchers("/img/**").permitAll()
 			.antMatchers("/movie/**").permitAll()
 			.antMatchers("/genre/**").permitAll()
+			.antMatchers("/community/pub/**").permitAll()
+			.antMatchers("/auth/**").permitAll()
 			.anyRequest().authenticated();
 		
 		http.authenticationProvider(authenticationProvider());

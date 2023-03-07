@@ -2,37 +2,121 @@
   <div class="container" style="margin-top: 3rem;">
     <h3 class="mb-3">글 작성</h3>
     <div class="form-group mb-3">
-      <select class="form-select-custom">
-        <option value="">공지</option>
-        <option value="">일반</option>
+      <select class="form-select-custom" v-model="formData.category">
+        <option value="normal">일반</option>
+        <option value="notice" v-if="auth.user.roles.includes('ROLE_ADMIN')">공지</option>
       </select>
-      <input type="email" class="form-control-custom" placeholder="제목을 입력하세요">
+      <input type="text" class="form-control-custom" placeholder="제목을 입력하세요" v-model="formData.title">
+      <div class="validation-div" v-if="errorMsgBag.category">{{ errorMsgBag.category }}</div>
+      <div class="validation-div" v-if="errorMsgBag.title">{{ errorMsgBag.title }}</div>
     </div>
     <div style="position: relative; display: block;" class="mb-3">
-      <input type="file" class="my-form" name="files" id="files" style="display: none;" multiple required>
-      <button type="button" id="trigger" class="my-btn d-block mb-3">파일 첨부</button>
+      <input type="file" ref="fileObjects" name="files" style="display: none;" multiple required @change="fileChange">
+      <button class="btn btn-success btn-custom" @click="fileUpload">파일 첨부</button>
+    </div>
+    <div>
+      <ul class="list-group list-group-flush">
+        <li v-for="(item, idx) in fileObjects" :key="idx" class="list-group-item d-flex justify-content-between align-items-start mb-3" style="border-radius: 4px;">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold text-success" v-if="item.validResult === 1">업로드 가능</div>
+            <div class="fw-bold text-danger" v-else>업로드 불가</div>
+            {{ item.name }}
+            <span class="" style="border-radius: 4px;"> | {{ item.size }} Bytes</span>
+          </div>
+        </li>
+      </ul>
     </div>
     <div class="mb-3">
-      <textarea class="form-control" id="exampleFormControlTextarea1" rows="20"></textarea>
+      <textarea class="form-control" id="exampleFormControlTextarea1" rows="20" v-model="formData.content"></textarea>
+      <div class="validation-div" v-if="errorMsgBag.content">{{ errorMsgBag.content }}</div>
     </div>
     <div class="text-end mb-3">
-      <button class="btn btn-primary btn-custom">작성완료</button>
+      <button class="btn btn-primary btn-custom" :disabled="submitDis" @click="submit">작성완료</button>
     </div>
   </div>
 </template>
 <script>
+import app from '@/js/app'
+import CommunityService from '@/services/community.service'
+
 export default {
   components: {},
   data() {
     return {
-      sampleData: ''
+      formData: {
+        category: 'normal',
+        title: '',
+        writerId: '',
+        content: '',
+        file: ''
+      },
+      fileObjects: [],
+      submitDis: false,
+      errorMsgBag: {}
     }
   },
-  setup() {},
+  computed: {
+    auth() {
+      return this.$store.state.auth
+    }
+  },
   created() {},
   mounted() {},
   unmounted() {},
-  methods: {}
+  methods: {
+    fileUpload() {
+      this.$refs.fileObjects.click()
+    },
+    fileChange() {
+      this.fileObjects = []
+
+      let isOk = 1
+      const files = this.$refs.fileObjects.files
+
+      for (const file of files) {
+        const validResult = app.fileSizeValidation(file.name, file.size)
+        isOk *= validResult
+        file.validResult = validResult
+        this.fileObjects.push(file)
+      }
+
+      if (isOk === 0) {
+        this.submitDis = true
+      } else {
+        this.submitDis = false
+      }
+    },
+    submit() {
+      const formData = new FormData()
+
+      if (this.auth.user) {
+        this.formData.writerId = this.auth.user.userId
+      }
+      if (this.fileObjects.length === 0) {
+        this.formData.file = false
+      } else {
+        this.formData.file = true
+      }
+
+      // formData.append('commCreateRequest', this.formData)
+      formData.append('commCreateRequest', new Blob([JSON.stringify(this.formData)], { type: 'application/json' }))
+
+      for (let i = 0; i < this.fileObjects.length; i++) {
+        const file = this.fileObjects[i]
+        formData.append('files', file)
+      }
+      // formData.append('files', this.fileObjects)
+
+      CommunityService.createCommunity(formData)
+        .then((res) => {
+          console.log(res)
+          alert('글 작성이 완료되었습니다.')
+          this.$router.push({ path: '/community' })
+        }).catch((err) => {
+          this.errorMsgBag = err.response.data
+        })
+    }
+  }
 }
 </script>
 <style scoped>

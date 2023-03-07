@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mpi.mapper.FileMapper">
+	<insert id="saveFile" parameterType="FileDto">
+		INSERT INTO tb_file
+		(
+			uuid,
+			comm_id,
+			save_dir,
+			file_type,
+			file_size,
+			reg_at,
+			file_name
+		)
+		VALUES
+		(
+			#{uuid},
+			#{commId},
+			#{saveDir},
+			#{fileType},
+			#{fileSize},
+			now(),
+			#{fileName}
+		)
+	</insert>
+	<select id="getFileList" parameterType="string" resultType="FileDto">
+		SELECT * FROM tb_file
+			WHERE 1=1
+			AND comm_id = #{commId}
+	</select>
+</mapper>

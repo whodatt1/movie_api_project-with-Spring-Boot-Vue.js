@@ -11,6 +11,8 @@
     	<typeAlias type="com.example.mpi.dto.AuthDto" alias="AuthDto"/>
     	<typeAlias type="com.example.mpi.dto.RefreshTokenDto" alias="RefreshTokenDto"/>
     	<typeAlias type="com.example.mpi.dto.GenreCdDto" alias="GenreCdDto"/>
+    	<typeAlias type="com.example.mpi.dto.FileDto" alias="FileDto"/>
+    	<typeAlias type="com.example.mpi.dto.CommunityDto" alias="CommunityDto"/>
     	<typeAlias type="com.example.mpi.paging.Criteria" alias="Criteria"/>
     </typeAliases>
 </configuration>

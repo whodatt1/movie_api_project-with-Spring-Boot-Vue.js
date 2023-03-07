@@ -4,9 +4,11 @@ import javax.validation.constraints.NotEmpty;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class CommCreateRequest {
 	
 	@NotEmpty(message = "종류는 필수 입력 사항입니다.")
@@ -21,4 +23,5 @@ public class CommCreateRequest {
 	private String content;
 	
 	private boolean file;
+	
 }

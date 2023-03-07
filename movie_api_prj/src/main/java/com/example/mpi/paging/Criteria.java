@@ -2,9 +2,11 @@ package com.example.mpi.paging;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class Criteria {
 	private int pageNo;
 	private int qty;
@@ -12,6 +14,8 @@ public class Criteria {
 	private String genre;
 	private String sortBy;
 	private String title;
+	private String type;
+	private String keyWord;
 	
 	public Criteria() {
 		this(1, 10);

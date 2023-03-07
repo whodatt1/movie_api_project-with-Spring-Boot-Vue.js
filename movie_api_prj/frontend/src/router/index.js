@@ -8,6 +8,7 @@ import MovieDetailVue from '../views/MovieDetail.vue'
 import IconShopVue from '../views/IconShop.vue'
 import MovieSearchVue from '../views/MovieSearch.vue'
 import CommunityCreateVue from '../views/CommunityCreate.vue'
+import CommunityDetailVue from '../views/CommunityDetail.vue'
 
 const routes = [
   {
@@ -63,6 +64,12 @@ const routes = [
     name: 'communitycreate',
     component: CommunityCreateVue,
     meta: { requiredAuth: true }
+  },
+  {
+    path: '/communitydetail',
+    name: 'communitydetail',
+    component: CommunityDetailVue,
+    meta: { requiredAuth: false }
   }
 ]
 

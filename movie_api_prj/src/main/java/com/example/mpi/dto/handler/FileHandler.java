@@ -19,7 +19,7 @@ import net.coobird.thumbnailator.Thumbnails;
 @Component
 public class FileHandler {
 
-	private final String UP_DIR = "C:\\_javaweb\\movie_api_prj_git\\fileUpload";
+	private final String UP_DIR = "C:\\_javaweb\\movie_api_prj_git\\movie_api_prj\\frontend\\public\\uploadFile";
 	
 	public List<FileDto> uploadFiles(MultipartFile[] files) {
 		
@@ -30,7 +30,7 @@ public class FileHandler {
 		File folders = new File(UP_DIR, today);
 		
 		if (!folders.exists()) {
-			folders.mkdir();
+			folders.mkdirs();
 		}
 		
 		List<FileDto> fileList = new ArrayList<FileDto>();
