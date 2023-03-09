@@ -17,6 +17,8 @@ public class Criteria {
 	private String type;
 	private String keyWord;
 	
+	private String userId;
+	
 	public Criteria() {
 		this(1, 10);
 	}

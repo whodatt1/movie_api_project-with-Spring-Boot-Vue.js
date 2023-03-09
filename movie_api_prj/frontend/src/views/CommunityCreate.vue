@@ -98,20 +98,18 @@ export default {
         this.formData.file = true
       }
 
-      // formData.append('commCreateRequest', this.formData)
-      formData.append('commCreateRequest', new Blob([JSON.stringify(this.formData)], { type: 'application/json' }))
+      formData.append('commRequest', new Blob([JSON.stringify(this.formData)], { type: 'application/json' }))
 
       for (let i = 0; i < this.fileObjects.length; i++) {
         const file = this.fileObjects[i]
         formData.append('files', file)
       }
-      // formData.append('files', this.fileObjects)
 
       CommunityService.createCommunity(formData)
         .then((res) => {
           console.log(res)
           alert('글 작성이 완료되었습니다.')
-          this.$router.push({ path: '/community' })
+          this.$router.push({ name: 'community', query: { pageNo: 1 } })
         }).catch((err) => {
           this.errorMsgBag = err.response.data
         })

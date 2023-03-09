@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mpi.mapper.BookmarkMapper">
+	<insert id="createBookmark" parameterType="BookmarkDto">
+		INSERT INTO tb_bookmark
+		(
+			movie_id,
+			user_id,
+			del,
+			reg_at,
+			mod_at
+		)
+		VALUES
+		(
+			#{movieId},
+			#{userId},
+			0,
+			now(),
+			now()
+		)
+	</insert>
+	<select id="getIsBookmark" parameterType="BookmarkDto" resultType="boolean">
+		SELECT EXISTS 
+    	(
+    		SELECT * 
+    			FROM tb_bookmark 
+    			WHERE user_id = #{userId}
+    			AND del = 0
+    			AND movie_id = #{movieId}
+    			LIMIT 1
+    	);
+	</select>
+	<select id="getBookmarkListByUserId" parameterType="Criteria" resultType="MovieDto">
+		SELECT 
+			m.id,
+			m.title,
+			m.original_title,
+			m.genre_ids,
+			m.overview,
+			m.popularity,
+			m.vote_average,
+			m.release_date,
+			m.poster_path,
+			m.backdrop_path,
+			m.adult,
+			m.video,
+			m.original_language,
+			m.data_reg_dt,
+			m.data_mod_dt 
+		FROM tb_bookmark bm
+		LEFT OUTER JOIN mpi.tb_movie m
+		ON bm.movie_id = m.id
+		WHERE 1=1
+		AND bm.user_id = #{userId}
+		ORDER BY bm.reg_at DESC
+		LIMIT 0, #{forMoreBtnQty}
+	</select>
+	<select id="getBookmarkListByUserIdTotalCount" parameterType="Criteria" resultType="int">
+		SELECT 
+			count(*)
+		FROM tb_bookmark bm
+		LEFT OUTER JOIN mpi.tb_movie m
+		ON bm.movie_id = m.id
+		WHERE 1=1
+		AND bm.user_id = #{userId}
+	</select>
+	<update id="deleteBookmark" parameterType="BookmarkDto">
+		UPDATE tb_bookmark
+			SET
+			del = #{del},
+			mod_at = now()
+			WHERE user_id = #{userId}
+			AND movie_id = #{movieId}
+	</update>
+</mapper>

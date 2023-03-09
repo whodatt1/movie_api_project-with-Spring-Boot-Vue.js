@@ -38,6 +38,7 @@
 	<select id="getCommunityListAll" parameterType="Criteria" resultType="CommunityDto">
     	SELECT * FROM tb_community 
 			WHERE 1=1
+			AND del = 0
 			<if test="type != null and type != ''">
 				<choose>
 					<when test="type == 'title'">
@@ -64,6 +65,7 @@
 	<select id="getCommunityTotalCount" parameterType="Criteria" resultType="int">
 		SELECT count(*) FROM tb_community
 			WHERE 1=1
+			AND del = 0
 			<if test="type != null and type != ''">
 				<choose>
 					<when test="type == 'title'">
@@ -90,4 +92,41 @@
 			WHERE 1=1
 			AND id = #{id}
 	</select>
+	<update id="updateReplyCnt" parameterType="HashMap">
+		UPDATE tb_community
+			SET
+			reply_count = reply_count + #{cnt}
+			WHERE id = #{commId}
+	</update>
+	<update id="updateViews" parameterType="string">
+		UPDATE tb_community
+			SET
+			views = views + 1
+			WHERE id = #{id}
+	</update>
+	<update id="delCommunity" parameterType="CommunityDto">
+		UPDATE tb_community
+			SET
+			del = #{del},
+			mod_dt = now(),
+			mod_user_id = #{modUserId}
+			WHERE id = #{id}
+	</update>
+	<update id="updateCommunity" parameterType="CommunityDto">
+		UPDATE tb_community
+			SET
+			category = #{category},
+			title = #{title},
+			content = #{content},
+			file = #{file},
+			mod_dt = now(),
+			mod_user_id = #{writerId}
+			WHERE id = #{id}
+	</update>
+	<update id="voteCommunity" parameterType="string">
+		UPDATE tb_community
+			SET
+			vote = vote + 1
+			WHERE id = #{id}
+	</update>
 </mapper>

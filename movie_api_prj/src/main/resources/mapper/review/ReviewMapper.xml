@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mpi.mapper.ReviewMapper">
+	<insert id="createReview" parameterType="ReviewDto">
+		INSERT INTO tb_review
+		(
+			writer_id,
+			ratings,
+			content,
+			del,
+			reg_dt,
+			reg_user_id,
+			mod_dt,
+			mod_user_id,
+			movie_id
+		)
+		VALUES
+		(
+			#{writerId},
+			#{ratings},
+			#{content},
+			0,
+			now(),
+			#{writerId},
+			now(),
+			#{writerId},
+			#{movieId}
+		)
+	</insert>
+	<select id="getReviewList" parameterType="string" resultType="ReviewDto">
+		SELECT * FROM tb_review
+			WHERE 1=1
+			AND del = 0
+			AND movie_id = #{movieId}	
+	</select>
+	<select id="getRatingsAverage" parameterType="string" resultType="float">
+		SELECT 
+			AVG(ratings)			
+			FROM tb_review
+			WHERE 1=1
+			AND del = 0
+			AND movie_id = #{movieId};	
+	</select>
+	<update id="delReview" parameterType="ReviewDto">
+		UPDATE tb_review
+			SET
+			del = #{del},
+			mod_dt = now(),
+			mod_user_id = #{modUserId}
+			WHERE 1=1
+			AND id = #{id}
+	</update>
+</mapper>

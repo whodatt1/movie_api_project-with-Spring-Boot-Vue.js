@@ -28,4 +28,14 @@
 			WHERE 1=1
 			AND comm_id = #{commId}
 	</select>
+	<delete id="deleteFileForComm" parameterType="HashMap">
+		DELETE FROM tb_file
+			WHERE 1=1
+			AND comm_id = #{commId}
+	</delete>
+	<delete id="delImgForUpdate" parameterType="string">
+		DELETE FROM tb_file
+			WHERE 1=1
+			AND uuid = #{uuid}
+	</delete>
 </mapper>

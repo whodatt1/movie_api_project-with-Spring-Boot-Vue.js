@@ -19,7 +19,7 @@ import net.coobird.thumbnailator.Thumbnails;
 @Component
 public class FileHandler {
 
-	private final String UP_DIR = "C:\\_javaweb\\movie_api_prj_git\\movie_api_prj\\frontend\\public\\uploadFile";
+	private final String UP_DIR = "C:\\_javaweb\\movie_api_prj_git\\movie_api_prj\\frontend\\src\\assets\\uploadFile";
 	
 	public List<FileDto> uploadFiles(MultipartFile[] files) {
 		
@@ -56,7 +56,7 @@ public class FileHandler {
 				if (isImageFile(storeFile)) {
 					fileDto.setFileType(1);
 					File thumbnail = new File(folders,
-							uuid.toString() + "_th" + onlyFileName);
+							uuid.toString() + "_th_" + onlyFileName);
 					Thumbnails.of(storeFile).size(640, 480).toFile(thumbnail);
 				}
 			} catch (Exception e) {

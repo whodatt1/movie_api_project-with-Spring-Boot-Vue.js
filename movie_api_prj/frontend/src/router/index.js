@@ -5,10 +5,11 @@ import Main from '../views/Main.vue'
 import MovieVue from '../views/Movie.vue'
 import SignUpVue from '../views/SignUp.vue'
 import MovieDetailVue from '../views/MovieDetail.vue'
-import IconShopVue from '../views/IconShop.vue'
 import MovieSearchVue from '../views/MovieSearch.vue'
 import CommunityCreateVue from '../views/CommunityCreate.vue'
 import CommunityDetailVue from '../views/CommunityDetail.vue'
+import CommunityUpdateVue from '../views/CommunityUpdate.vue'
+import BookmarkVue from '../views/Bookmark.vue'
 
 const routes = [
   {
@@ -48,15 +49,21 @@ const routes = [
     meta: { requiredAuth: false }
   },
   {
+    path: '/communityupdate',
+    name: 'communityupdate',
+    component: CommunityUpdateVue,
+    meta: { requiredAuth: true }
+  },
+  {
+    path: '/bookmark',
+    name: 'bookmark',
+    component: BookmarkVue,
+    meta: { requiredAuth: true }
+  },
+  {
     path: '/community',
     name: 'community',
     component: CommunityVue,
-    meta: { requiredAuth: false }
-  },
-  {
-    path: '/iconshop',
-    name: 'iconshop',
-    component: IconShopVue,
     meta: { requiredAuth: false }
   },
   {

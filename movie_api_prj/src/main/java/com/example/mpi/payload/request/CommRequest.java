@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CommCreateRequest {
+public class CommRequest {
 	
 	@NotEmpty(message = "종류는 필수 입력 사항입니다.")
 	private String category;
@@ -24,4 +24,7 @@ public class CommCreateRequest {
 	
 	private boolean file;
 	
+	private long id;
+	
+	private String userId;
 }

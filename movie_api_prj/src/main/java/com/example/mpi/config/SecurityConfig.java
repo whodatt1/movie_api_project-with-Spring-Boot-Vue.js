@@ -70,7 +70,10 @@ public class SecurityConfig {
 			.antMatchers("/img/**").permitAll()
 			.antMatchers("/movie/**").permitAll()
 			.antMatchers("/genre/**").permitAll()
+			.antMatchers("/bookmark/**").permitAll()
 			.antMatchers("/community/pub/**").permitAll()
+			.antMatchers("/comment/pub/**").permitAll()
+			.antMatchers("/review/pub/**").permitAll()
 			.antMatchers("/auth/**").permitAll()
 			.anyRequest().authenticated();
 		
