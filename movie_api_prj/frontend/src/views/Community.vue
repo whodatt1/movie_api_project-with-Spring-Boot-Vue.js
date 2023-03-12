@@ -20,13 +20,13 @@
           <th scope="row" style="width: 55%;">
             <div class="div-wrap">
               <div class="title-div">
-                <router-link :to="`/communitydetail?id=${item.id}&pageNo=${params.pageNo}&type=${params.type}&keyWord=${params.keyWord}`" class="comu-title">{{ item.title }}</router-link>
+                <router-link :to="`/communitydetail?id=${item.id}&pageNo=${params.pageNo}&type=${params.type}&keyWord=${params.keyWord}`" class="comu-title" style="color: blue; font-weight: 900;">{{ item.title }}</router-link>
               </div>
               <span v-if="item.replyCount !== 0" class="reply">[{{ item.replyCount }}]</span>
               <span v-if="item.file"><i class="fa-sharp fa-regular fa-image"></i></span>
             </div>
           </th>
-          <th scope="row" style="width: 8%; text-align: center;">{{ item.writerId }}</th>
+          <th scope="row" style="width: 8%; text-align: center; font-weight: 900;">{{ item.writerId }}</th>
           <th scope="row" style="width: 8%; text-align: center;">{{ app.getRegDtForCommunity(item.regDt) }}</th>
           <th scope="row" style="width: 8%; text-align: center;">{{ item.views }}</th>
           <th scope="row" style="width: 8%; text-align: center;">{{ item.vote }}</th>
@@ -110,7 +110,7 @@ export default {
       this.params.pageNo = this.$route.query.pageNo
     }
     this.getCommunityAll(this.params)
-    this.getCommunityAllNotice(this.params)
+    this.getCommunityAllNotice()
   },
   unmounted() {},
   methods: {
@@ -129,8 +129,13 @@ export default {
           console.log(err)
         })
     },
-    getCommunityAllNotice(params) {
-
+    getCommunityAllNotice() {
+      CommunityService.getCommunityAllNotice()
+        .then((result) => {
+          this.communityNoticeList = result.data
+        }).catch((err) => {
+          console.log(err)
+        })
     }
   }
 }

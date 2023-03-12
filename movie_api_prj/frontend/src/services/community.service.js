@@ -18,13 +18,7 @@ class CommunityService {
   }
 
   getCommunityAllNotice(params) {
-    return instance.get('/community/pub/list/notice', {
-      params: {
-        pageNo: params.pageNo,
-        type: params.type,
-        keyWord: params.keyWord
-      }
-    })
+    return instance.get('/community/pub/list/notice')
   }
 
   getCommunityDetail(id) {
