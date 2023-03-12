@@ -29,4 +29,6 @@ public interface CommunityMapper {
 
 	int voteCommunity(String id);
 
+	List<CommunityDto> getCommunityListAllNotice();
+
 }

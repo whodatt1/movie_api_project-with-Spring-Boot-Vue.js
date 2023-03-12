@@ -138,7 +138,6 @@ public class CommunityController {
 		Criteria criteria = new Criteria(searchParamsRequest.getPageNo(), 10);
 		criteria.setType(searchParamsRequest.getType());
 		criteria.setKeyWord(searchParamsRequest.getKeyWord());
-		System.out.println(criteria.toString());
 		
 		PagingHandler communityListAll = communityService.getCommunityListAll(criteria);
 		
@@ -147,6 +146,18 @@ public class CommunityController {
 		}
 		
 		return new ResponseEntity<>(communityListAll, HttpStatus.OK);
+	}
+	
+	@GetMapping("/pub/list/notice")
+	public ResponseEntity<List<CommunityDto>> getCommunityAllNotice() {
+		
+		List<CommunityDto> communityListAllNotice = communityService.getCommunityListAllNotice();
+		
+		if (communityListAllNotice.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		
+		return new ResponseEntity<>(communityListAllNotice, HttpStatus.OK);
 	}
 	
 	@GetMapping("/pub/detail/{id}")

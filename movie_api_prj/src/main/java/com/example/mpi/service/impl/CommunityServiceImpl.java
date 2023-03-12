@@ -94,4 +94,9 @@ public class CommunityServiceImpl implements CommunityService {
 		return communityMapper.voteCommunity(id);
 	}
 
+	@Override
+	public List<CommunityDto> getCommunityListAllNotice() {
+		return communityMapper.getCommunityListAllNotice();
+	}
+
 }

@@ -1,5 +1,6 @@
 package com.example.mpi.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.validation.Errors;
@@ -28,4 +29,7 @@ public interface CommunityService {
 	int updateCommunity(CommunityDto communityDto);
 
 	int voteCommunity(String id);
+
+	List<CommunityDto> getCommunityListAllNotice();
+
 }
