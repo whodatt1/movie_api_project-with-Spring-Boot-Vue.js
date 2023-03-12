@@ -81,7 +81,7 @@ export default {
   mounted() {
     let adult = false
 
-    if (this.auth) {
+    if (this.auth.user) {
       adult = this.auth.user.adult
     }
     this.getMovieForMainUpComing(adult)

@@ -58,7 +58,7 @@ export default {
     }
   },
   mounted() {
-    if (this.auth) {
+    if (this.auth.user) {
       this.adult = this.auth.user.adult
     }
   },
