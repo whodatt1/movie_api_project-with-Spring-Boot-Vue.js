@@ -3,14 +3,16 @@
 <mapper namespace="com.example.mpi.mapper.UserMapper">
     <select id="findByUserId" parameterType="string" resultType="UserDto">
     	SELECT * FROM tb_user
-    	WHERE user_id = #{userId}
+    	WHERE del = 0 
+    	AND user_id = #{userId}
     </select>
     <select id="existsByUserId" parameterType="string" resultType="boolean">
     	SELECT EXISTS 
     	(
     		SELECT * 
     			FROM tb_user 
-    			WHERE user_id = #{userId} LIMIT 1
+    			WHERE del = 0
+    			AND user_id = #{userId} LIMIT 1
     	);
     </select>
     <insert id="saveUser" parameterType="UserDto">
@@ -43,4 +45,36 @@
 			#{userId}			
 		)
     </insert>
+    <update id="updateUser" parameterType="UserDto">
+    	UPDATE tb_user
+    		SET
+    		user_pw = #{userPw},
+    		user_nick_nm = #{userNickNm},
+    		user_email = #{userEmail},
+    		adult = #{adult},
+    		mod_dt = now(),
+    		mod_user_id = #{modUserId}
+    		WHERE user_id = #{userId}
+    </update>
+    <update id="updateLastLogin" parameterType="string">
+    	UPDATE tb_user
+    		SET
+    		last_login = now()
+    		WHERE user_id = #{userId}
+    </update>
+    <update id="deleteUser" parameterType="UserDto">
+    	UPDATE tb_user
+    		SET
+    		del = #{del},
+    		mod_dt = now(),
+    		mod_user_id = #{modUserId}
+    		WHERE user_id = #{userId}
+    </update>
+    <select id="getUserList" resultType="UserDto">
+    	SELECT * FROM tb_user u
+    		LEFT OUTER JOIN tb_user_auth ua
+			ON u.user_id = ua.user_id 
+    		WHERE del = 0
+    		AND ua.auth != 'ROLE_ADMIN';
+    </select>
 </mapper>

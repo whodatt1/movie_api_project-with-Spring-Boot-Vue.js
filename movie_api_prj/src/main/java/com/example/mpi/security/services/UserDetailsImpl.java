@@ -34,6 +34,8 @@ public class UserDetailsImpl implements UserDetails {
 	
 	private long userPoint;
 	
+	private String regDt;
+	
 	private String profileImgPath;
 	
 	private boolean adult;
@@ -53,6 +55,7 @@ public class UserDetailsImpl implements UserDetails {
 					user.getUserNickNm(),
 					user.getUserEmail(),
 					user.getUserPoint(),
+					user.getRegDt(),
 					user.getProfileImgPath(),
 					user.isAdult(),
 					authorities

@@ -50,14 +50,21 @@ export default {
       genre: '',
       genreCdAll: [],
       movieList: [],
-      moreVis: 'visible'
+      moreVis: 'visible',
+      adult: false
     }
   },
   setup() {},
   created() {},
   mounted() {
+    if (this.$route.query.pageNo) {
+      this.pageNo = parseInt(this.$route.query.pageNo)
+    }
+    if (this.$route.query.adult) {
+      this.adult = this.$route.query.adult
+    }
     this.getGenreCdAll()
-    this.getMovieListAll()
+    this.getMovieListAll(this.pageNo, this.adult)
   },
   unmounted() {},
   methods: {
@@ -69,10 +76,8 @@ export default {
           console.log(err)
         })
     },
-    getMovieListAll() {
-      this.pageNo = 1
-
-      MovieService.getMovieListAll(this.pageNo)
+    getMovieListAll(pageNo, adult) {
+      MovieService.getMovieListAll(pageNo, adult)
         .then((result) => {
           console.log(result)
           this.movieList = result.data.movieList
@@ -85,6 +90,7 @@ export default {
 
       let genre = this.genre
       let sortBy = this.sortBy
+      const adult = this.adult
 
       if (this.genre === '') {
         genre = 'none'
@@ -94,7 +100,7 @@ export default {
         sortBy = 'none'
       }
 
-      MovieService.getMovieListAllForResult(this.pageNo, genre, sortBy)
+      MovieService.getMovieListAllForResult(this.pageNo, genre, sortBy, adult)
         .then((result) => {
           this.movieList = result.data.movieList
           if (result.data.criteria.pageNo < result.data.endPage) {
@@ -108,9 +114,9 @@ export default {
     },
     getMore() {
       this.pageNo += 1
-
       let genre = this.genre
       let sortBy = this.sortBy
+      const adult = this.adult
 
       if (this.genre === '') {
         genre = 'none'
@@ -120,7 +126,7 @@ export default {
         sortBy = 'none'
       }
 
-      MovieService.getMovieListAllForResult(this.pageNo, genre, sortBy)
+      MovieService.getMovieListAllForResult(this.pageNo, genre, sortBy, adult)
         .then((result) => {
           this.movieList = result.data.movieList
           if (result.data.criteria.pageNo < result.data.endPage) {

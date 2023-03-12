@@ -105,11 +105,12 @@ public class MovieController {
 		
 	}
 	
-	@GetMapping("/list/{pageNo}")
-	public ResponseEntity<PagingHandler> getMovieListAll(@PathVariable("pageNo") int pageNo) {
+	@GetMapping("/list/{pageNo}/{adult}")
+	public ResponseEntity<PagingHandler> getMovieListAll(@PathVariable("pageNo") int pageNo, @PathVariable("adult") String adult) {
 		
 		try {
 			Criteria criteria = new Criteria(pageNo, 20);
+			criteria.setAdult(adult);
 			PagingHandler movieListAll = movieService.getMovieListAll(criteria);
 			if (movieListAll.getMovieList().isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -121,13 +122,14 @@ public class MovieController {
 		}
 	}
 	
-	@GetMapping("/list/{pageNo}/{genre}/{sortBy}")
-	public ResponseEntity<PagingHandler> getMovieListAllForResult(@PathVariable("pageNo") int pageNo, @PathVariable(name = "genre", required = false) String genre, @PathVariable(name = "sortBy", required = false) String sortBy) {
+	@GetMapping("/list/{pageNo}/{genre}/{sortBy}/{adult}")
+	public ResponseEntity<PagingHandler> getMovieListAllForResult(@PathVariable("pageNo") int pageNo, @PathVariable(name = "genre", required = false) String genre, @PathVariable(name = "sortBy", required = false) String sortBy, @PathVariable("adult") String adult) {
 		
 		try {
 			Criteria criteria = new Criteria(pageNo, 20);
 			criteria.setGenre(genre);
 			criteria.setSortBy(sortBy);
+			criteria.setAdult(adult);
 			
 			PagingHandler movieListAll = movieService.getMovieListAll(criteria);
 			if (movieListAll.getMovieList().isEmpty()) {
@@ -140,12 +142,13 @@ public class MovieController {
 		}
 	}
 	
-	@GetMapping("/list/{pageNo}/{title}")
-	public ResponseEntity<PagingHandler> getMovieListAllForResultTitle(@PathVariable("pageNo") int pageNo, @PathVariable(name = "title", required = false) String title) {
+	@GetMapping("/list/{pageNo}/{title}/{adult}")
+	public ResponseEntity<PagingHandler> getMovieListAllForResultTitle(@PathVariable("pageNo") int pageNo, @PathVariable(name = "title", required = false) String title, @PathVariable("adult") String adult) {
 		
 		try {
 			Criteria criteria = new Criteria(pageNo, 20);
 			criteria.setTitle(title);
+			criteria.setAdult(adult);
 			
 			PagingHandler movieListAll = movieService.getMovieListAll(criteria);
 			if (movieListAll.getMovieList().isEmpty()) {

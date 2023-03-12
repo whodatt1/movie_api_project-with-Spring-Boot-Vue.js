@@ -17,5 +17,7 @@ public interface ReviewService {
 
 	int delReview(ReviewDto reviewDto);
 
-	float getRatingsAverage(String movieId);
+	Object getRatingsAverage(String movieId);
+
+	Map<String, Object> getReviewData(String userId);
 }

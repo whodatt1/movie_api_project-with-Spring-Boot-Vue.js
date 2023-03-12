@@ -1,6 +1,7 @@
 package com.example.mpi.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import com.example.mpi.service.UserService;
 public class UserServiceImpl implements UserService {
 	
 	@Autowired
-	UserMapper userRepository;
+	UserMapper userMapper;
 
 	@Override
 	public Map<String, String> validateHandling(Errors errors) {
@@ -32,12 +33,32 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int saveUser(UserDto user) {
-		return userRepository.saveUser(user);
+		return userMapper.saveUser(user);
 	}
 
 	@Override
 	public boolean existsByUserId(String userId) {
-		return userRepository.existsByUserId(userId);
+		return userMapper.existsByUserId(userId);
+	}
+
+	@Override
+	public int updateUser(UserDto user) {
+		return userMapper.updateUser(user);
+	}
+
+	@Override
+	public int updateLastLogin(String userId) {
+		return userMapper.updateLastLogin(userId);
+	}
+
+	@Override
+	public int deleteUser(UserDto user) {
+		return userMapper.deleteUser(user);
+	}
+
+	@Override
+	public List<UserDto> getUserList() {
+		return userMapper.getUserList();
 	}
 
 }

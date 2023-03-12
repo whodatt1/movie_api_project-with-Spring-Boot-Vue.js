@@ -16,7 +16,7 @@
             <h3>TMDB 회원 점수</h3>
             <div class="movie-realease mb-3">{{ movie.voteAverage }} / 10</div>
             <h3>MPI 회원 점수</h3>
-            <div class="movie-realease mb-3">{{ average }} / 10</div>
+            <div class="movie-realease mb-3">{{ average === '' ? 0 : average }} / 10</div>
             <h3>개요</h3>
             <div class="movie-realease mb-3">{{ movie.overview }}</div>
             <button class="bookmark" @click="createBookmark(movie.id)" v-if="!isBookmark"><i class="fa-regular fa-heart"></i></button>
@@ -27,7 +27,17 @@
     </div>
     <div class="container">
       <h3>주요 출연진</h3>
-      <div class="mb-3"></div>
+      <div class="mb-3">
+        <div class="scroll-row mb-5">
+          <div class="scroll-card" v-for="(item, idx) in activeItemsCast" :key="idx">
+            <img :src="'https://image.tmdb.org/t/p/original' + item.profile_path" class="card-img-top">
+            <div class="card-body">
+              <h5 class="card-title">{{ item.original_name }}</h5>
+              <p class="card-text"><small class="text-muted">{{ item.character }}</small></p>
+            </div>
+          </div>
+        </div>
+      </div>
       <h3>리뷰</h3>
       <div class="text-center">별점을 선택해주세요.</div>
       <div>
@@ -86,10 +96,14 @@ export default {
       reviewArea: '',
       errorMsgBag: {},
       reviewList: [],
-      average: ''
+      average: '',
+      cast: []
     }
   },
   computed: {
+    activeItemsCast() {
+      return this.cast.filter(item => item.profile_path)
+    },
     auth() {
       return this.$store.state.auth
     }
@@ -102,9 +116,19 @@ export default {
     this.getIsBookmark(this.id)
     this.getReviewList(this.id)
     this.getRatingsAverage(this.id)
+    this.getCredit(this.id)
   },
   unmounted() { },
   methods: {
+    getCredit(movieId) {
+      MovieService.getCreditForMovieId(movieId)
+        .then((res) => {
+          console.log(res.data)
+          this.cast = res.data.cast
+        }).catch((err) => {
+          console.log(err)
+        })
+    },
     getRatingsAverage(movieId) {
       ReviewService.getRatingsAverage(movieId)
         .then((res) => {
@@ -140,7 +164,6 @@ export default {
       ReviewService.getReviewList(movieId)
         .then((res) => {
           if (res) {
-            console.log(res.data)
             this.reviewList = res.data
           }
         }).catch((err) => {
@@ -292,7 +315,23 @@ export default {
   text-align: center;
   width: 5em;
 }
+.scroll-row {
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 
+.scroll-card {
+  max-width: 22.222%;
+  padding: .75rem;
+  border: 0;
+  flex-basis: 22.222%;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
 .star-rating input {
   display: none;
 }
@@ -311,5 +350,19 @@ export default {
 .star-rating label:hover,
 .star-rating label:hover ~ label {
   -webkit-text-fill-color: #fff58c;
+}
+.scroll-row::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-row::-webkit-scrollbar-thumb {
+  height: 17%;
+  background-color: black;
+  border-radius: 10px;
+}
+
+.scroll-row::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: gray;
 }
 </style>

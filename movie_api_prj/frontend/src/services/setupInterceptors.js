@@ -28,7 +28,7 @@ export function setupInterceptors(instance) {
           originalConfig._retry = true
 
           try {
-            const { data } = await instance.post('/auth/refreshtoken')
+            const { data } = await instance.post('/auth/pub/refreshtoken')
 
             if (data) {
               if (data.accessToken) {

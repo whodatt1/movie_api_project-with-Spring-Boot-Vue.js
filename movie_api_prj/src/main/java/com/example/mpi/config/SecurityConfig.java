@@ -74,7 +74,7 @@ public class SecurityConfig {
 			.antMatchers("/community/pub/**").permitAll()
 			.antMatchers("/comment/pub/**").permitAll()
 			.antMatchers("/review/pub/**").permitAll()
-			.antMatchers("/auth/**").permitAll()
+			.antMatchers("/auth/pub/**").permitAll()
 			.anyRequest().authenticated();
 		
 		http.authenticationProvider(authenticationProvider());

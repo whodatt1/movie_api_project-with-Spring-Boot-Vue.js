@@ -39,4 +39,6 @@ public class UserDto {
 	
 	private String modUserId;
 	
+	private String lastLogin;
+	
 }

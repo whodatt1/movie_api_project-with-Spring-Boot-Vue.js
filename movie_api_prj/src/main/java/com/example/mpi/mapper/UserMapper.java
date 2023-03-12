@@ -1,9 +1,8 @@
 package com.example.mpi.mapper;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Component;
 
 import com.example.mpi.dto.UserDto;
 
@@ -15,5 +14,13 @@ public interface UserMapper {
 	UserDto findByUserId(String userId);
 	
 	boolean existsByUserId(String userId);
+
+	int updateUser(UserDto user);
+
+	int updateLastLogin(String userId);
+
+	int deleteUser(UserDto user);
+
+	List<UserDto> getUserList();
 	
 }

@@ -46,8 +46,13 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public float getRatingsAverage(String movieId) {
+	public Object getRatingsAverage(String movieId) {
 		return reviewMapper.getRatingsAverage(movieId);
+	}
+
+	@Override
+	public Map<String, Object> getReviewData(String userId) {
+		return reviewMapper.getReviewData(userId);
 	}
 
 }

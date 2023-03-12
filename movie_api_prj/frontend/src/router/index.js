@@ -10,6 +10,10 @@ import CommunityCreateVue from '../views/CommunityCreate.vue'
 import CommunityDetailVue from '../views/CommunityDetail.vue'
 import CommunityUpdateVue from '../views/CommunityUpdate.vue'
 import BookmarkVue from '../views/Bookmark.vue'
+import MyPageVue from '@/views/MyPage.vue'
+import UpdateUserVue from '@/views/UpdateUser.vue'
+import DeleteUserVue from '@/views/DeleteUser.vue'
+import AdminPageVue from '@/views/AdminPage.vue'
 
 const routes = [
   {
@@ -77,6 +81,30 @@ const routes = [
     name: 'communitydetail',
     component: CommunityDetailVue,
     meta: { requiredAuth: false }
+  },
+  {
+    path: '/mypage',
+    name: 'mypage',
+    component: MyPageVue,
+    meta: { requiredAuth: true }
+  },
+  {
+    path: '/updateuser',
+    name: 'updateuser',
+    component: UpdateUserVue,
+    meta: { requiredAuth: true }
+  },
+  {
+    path: '/deleteuser',
+    name: 'deleteuser',
+    component: DeleteUserVue,
+    meta: { requiredAuth: true }
+  },
+  {
+    path: '/adminpage',
+    name: 'adminpage',
+    component: AdminPageVue,
+    meta: { requiredAuth: true }
   }
 ]
 

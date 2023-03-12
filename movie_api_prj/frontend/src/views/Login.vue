@@ -46,6 +46,9 @@ export default {
         alert('로그인에 성공하였습니다.')
       },
       (error) => {
+        if (error.response.status === 401) {
+          alert('회원정보가 일치하지 않습니다 관리자에게 문의해주세요.')
+        }
         this.errorMsgBag = error.response.data
       })
     }

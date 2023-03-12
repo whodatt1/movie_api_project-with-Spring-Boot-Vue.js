@@ -33,7 +33,7 @@
 			AND del = 0
 			AND movie_id = #{movieId}	
 	</select>
-	<select id="getRatingsAverage" parameterType="string" resultType="float">
+	<select id="getRatingsAverage" parameterType="string" resultType="Object">
 		SELECT 
 			AVG(ratings)			
 			FROM tb_review
@@ -50,4 +50,17 @@
 			WHERE 1=1
 			AND id = #{id}
 	</update>
+	<select id="getReviewData" parameterType="string" resultType="HashMap">
+		SELECT
+		  COUNT(CASE WHEN ratings = 2 THEN 1 END) AS cnt2,
+		  COUNT(CASE WHEN ratings = 4 THEN 1 END) AS cnt4,
+		  COUNT(CASE WHEN ratings = 6 THEN 1 END) AS cnt6,
+		  COUNT(CASE WHEN ratings = 8 THEN 1 END) AS cnt8,
+		  COUNT(CASE WHEN ratings = 10 THEN 1 END) AS cnt10,
+		  COUNT(CASE WHEN ratings BETWEEN 2 AND 10 THEN 1 END) AS allCnt
+		FROM
+		  mpi.tb_review
+		WHERE
+		  writer_id = #{userId};
+	</select>
 </mapper>

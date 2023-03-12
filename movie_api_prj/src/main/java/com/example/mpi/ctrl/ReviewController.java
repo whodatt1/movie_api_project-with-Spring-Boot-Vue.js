@@ -68,15 +68,13 @@ public class ReviewController {
 	@GetMapping("/pub/average/{movieId}")
 	public ResponseEntity<?> getRatingsAverage(@PathVariable("movieId") String movieId) {
 		
-		try {
-			float average = reviewService.getRatingsAverage(movieId);
-			
-			return new ResponseEntity<>(average, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		Object average = reviewService.getRatingsAverage(movieId);
+		
+		if (average != null) {
+			return new ResponseEntity<>((float) average, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		
-		
 	}
 	
 	@PostMapping("/del")
@@ -95,5 +93,18 @@ public class ReviewController {
 		}
 		
 		return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+	}
+	
+	@GetMapping("/data/{userId}")
+	public ResponseEntity<?> getReviewData(@PathVariable("userId") String userId) {
+		
+		Map<String, Object> reviewData = reviewService.getReviewData(userId);
+	
+		if (reviewData != null) {
+			
+			return new ResponseEntity<>(reviewData, HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	}
 }

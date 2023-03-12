@@ -1,6 +1,7 @@
 package com.example.mpi.ctrl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,7 +71,7 @@ public class AuthController {
 	@Autowired
 	CheckUserIdValidator checkUserIdValidator;
 	
-	@PostMapping("/login")
+	@PostMapping("/pub/login")
 	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest, Errors errors, HttpServletResponse resp) {
 		
 		// 리퀘스트로 넘어온 값 밸리데이션 체크
@@ -76,15 +79,22 @@ public class AuthController {
 			Map<String, String> validatorResult = userService.validateHandling(errors);
 			return ResponseEntity.badRequest().body(validatorResult);
 		}
+		
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserId(), loginRequest.getUserPw()));
+		
 		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+		
 		String jwt = jwtUtils.generateJwtToken(userDetails);
+		
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
+		
 		RefreshTokenDto refreshToken = refreshTokenService.createRefreshToken(userDetails.getUserId());
+		
 		Cookie cookie = new Cookie(jwtRefreshCookie, refreshToken.getToken());
 		
 		cookie.setMaxAge(24 * 60 * 60);
@@ -94,14 +104,17 @@ public class AuthController {
 		resp.addCookie(cookie);
 		
 		return ResponseEntity.ok()
-				.body(new JwtResponse(jwt ,userDetails.getUserId(), userDetails.getUserNickNm(), userDetails.isAdult(), roles));
+				.body(new JwtResponse(jwt ,userDetails.getUserId(), userDetails.getUserNickNm(), userDetails.getUserEmail(), userDetails.isAdult(), userDetails.getRegDt(), roles));
 	}
 	
 	@PostMapping("/logout")
 	public ResponseEntity<?> logoutUser(HttpServletResponse resp) {
+		
 		Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
 		if (principle.toString() != "anonymousUser") {
 			String userId = ((UserDetailsImpl) principle).getUserId();
+			userService.updateLastLogin(userId);
 			refreshTokenService.deleteByUserId(userId);
 		}
 		
@@ -115,16 +128,19 @@ public class AuthController {
 				.body(null);
 	}
 	
-	@PostMapping("/signup")
+	@PostMapping("/pub/signup")
 	public ResponseEntity<?> signUpUser(@Valid @RequestBody SignUpRequest signUpRequest, Errors errors) {
 		
-		// 여기서 따로 중복체크 해야함 코드 작성 예정
+		if (userService.existsByUserId(signUpRequest.getUserId())) {
+			Map<String, String> dupleCheck = new HashMap<>();
+			dupleCheck.put("userId", "이미 사용중인 아이디입니다. 다른 아이디를 사용해주세요");
+            return ResponseEntity.badRequest().body(dupleCheck);
+		}
 		
 		// 리퀘스트로 넘어온 값 밸리데이션 체크
 		if (errors.hasErrors()) {
 			Map<String, String> validatorResult = userService.validateHandling(errors);
 			return ResponseEntity.badRequest().body(validatorResult);
-			
 		}
 		
 		// 유저 정보
@@ -153,7 +169,7 @@ public class AuthController {
 		return ResponseEntity.ok().body(null);
 	}
 	
-	@PostMapping("/refreshtoken")
+	@PostMapping("/pub/refreshtoken")
 	public ResponseEntity<?> refreshToken(HttpServletRequest request) {
 		String refreshToken = jwtUtils.getCookieValueByName(request, jwtRefreshCookie);
 		
@@ -171,5 +187,81 @@ public class AuthController {
 		}
 		
 		return ResponseEntity.badRequest().body(null);
+	}
+	
+	@PostMapping("/update")
+	public ResponseEntity<?> updateUser(@Valid @RequestBody SignUpRequest signUpRequest, Errors errors) {
+		
+		// 여기서 따로 중복체크 해야함 코드 작성 예정
+		
+		// 리퀘스트로 넘어온 값 밸리데이션 체크
+		if (errors.hasErrors()) {
+			Map<String, String> validatorResult = userService.validateHandling(errors);
+			return ResponseEntity.badRequest().body(validatorResult);
+		}
+		
+		// 유저 정보
+		UserDto user = UserDto.builder()
+						.userId(signUpRequest.getUserId())
+						.userNickNm(signUpRequest.getUserNickNm())
+						.userPw(encoder.encode(signUpRequest.getUserPw()))
+						.userEmail(signUpRequest.getUserEmail())
+						.adult(signUpRequest.isAdult())
+						.modUserId(signUpRequest.getUserId())
+						.build();
+		
+		userService.updateUser(user);
+		
+		return ResponseEntity.ok().body(null);
+	}
+	
+	@PostMapping("/delete")
+	public ResponseEntity<?> deleteUser(@Valid @RequestBody LoginRequest loginRequest, Errors errors, HttpServletResponse resp) {
+		
+		// 리퀘스트로 넘어온 값 밸리데이션 체크
+		if (errors.hasErrors()) {
+			Map<String, String> validatorResult = userService.validateHandling(errors);
+			return ResponseEntity.badRequest().body(validatorResult);
+		}
+		
+		Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		if (principle.toString() != "anonymousUser") {
+			String userId = ((UserDetailsImpl) principle).getUserId();
+			refreshTokenService.deleteByUserId(userId);
+			
+			if (encoder.matches(loginRequest.getUserPw(), ((UserDetailsImpl) principle).getPassword())) {
+				UserDto user = UserDto.builder()
+						.userId(userId)
+						.del(true)
+						.modUserId(userId)
+						.build();
+				
+				userService.deleteUser(user);
+			} else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			}
+		}
+		
+		Cookie cookie = new Cookie(jwtRefreshCookie, null);
+		cookie.setMaxAge(0);
+		cookie.setPath("/");
+		
+		resp.addCookie(cookie);
+		
+		return ResponseEntity.ok()
+				.build();
+	}
+	
+	@GetMapping("/list")
+	public ResponseEntity<List<UserDto>> getUserList() {
+		
+		List<UserDto> userList = userService.getUserList();
+		
+		if (userList.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		
+		return new ResponseEntity<>(userList, HttpStatus.OK);
 	}
 }

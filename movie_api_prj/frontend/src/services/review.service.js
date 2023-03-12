@@ -16,6 +16,10 @@ class ReviewService {
   getRatingsAverage(movieId) {
     return instance.get(`/review/pub/average/${movieId}`)
   }
+
+  getReviewDataForUserId(userId) {
+    return instanceAuth.get(`/review/data/${userId}`)
+  }
 }
 
 export default new ReviewService()

@@ -1,6 +1,7 @@
 package com.example.mpi.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -15,6 +16,8 @@ public interface ReviewMapper {
 
 	int delReview(ReviewDto reviewDto);
 
-	float getRatingsAverage(String movieId);
+	Object getRatingsAverage(String movieId);
+
+	Map<String, Object> getReviewData(String userId);
 
 }

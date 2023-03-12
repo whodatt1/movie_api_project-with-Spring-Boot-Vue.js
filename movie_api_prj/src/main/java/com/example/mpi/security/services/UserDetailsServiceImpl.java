@@ -41,6 +41,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 								.userNickNm(user.getUserNickNm())
 								.userEmail(user.getUserEmail())
 								.userPoint(user.getUserPoint())
+								.regDt(user.getRegDt())
+								.adult(user.isAdult())
 								.profileImgPath(user.getProfileImgPath())
 								.authList(authList)
 								.build();

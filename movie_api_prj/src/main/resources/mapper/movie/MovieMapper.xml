@@ -8,10 +8,14 @@
 			AND backdrop_path IS NOT NULL
 			AND original_language NOT IN ('ko','ja')
 			AND overview != ''
-			<if test="adult == 'false' or adult == ''">
-				AND adult = 0
-			</if>
-			AND adult IN (0, 1)
+			<choose>
+				<when test="adult == 'false' or adult == ''">
+					AND adult = 0
+				</when>
+				<otherwise>
+					AND adult IN (0, 1)
+				</otherwise>
+			</choose>
 			ORDER BY release_date DESC
 			LIMIT 20;
     </select>
@@ -23,10 +27,14 @@
 			AND release_date <![CDATA[<=]]> now()
 			AND original_language NOT IN ('ko','ja')
 			AND overview != ''
-			<if test="adult == 'false' or adult == ''">
-				AND adult = 0
-			</if>
-			AND adult IN (0, 1)
+			<choose>
+				<when test="adult == 'false' or adult == ''">
+					AND adult = 0
+				</when>
+				<otherwise>
+					AND adult IN (0, 1)
+				</otherwise>
+			</choose>
 			ORDER BY release_date DESC
 			LIMIT 20;
     </select>
@@ -38,10 +46,14 @@
 			AND release_date <![CDATA[<=]]> now()
 			AND original_language NOT IN ('ko','ja')
 			AND overview != ''
-			<if test="adult == 'false' or adult == ''">
-				AND adult = 0
-			</if>
-			AND adult IN (0, 1)
+			<choose>
+				<when test="adult == 'false' or adult == ''">
+					AND adult = 0
+				</when>
+				<otherwise>
+					AND adult IN (0, 1)
+				</otherwise>
+			</choose>
 			ORDER BY vote_average DESC
 			LIMIT 20;
     </select>
@@ -53,10 +65,14 @@
 			AND release_date <![CDATA[<=]]> now()
 			AND original_language NOT IN ('ko','ja')
 			AND overview != ''
-			<if test="adult == 'false' or adult == ''">
-				AND adult = 0
-			</if>
-			AND adult IN (0, 1)
+			<choose>
+				<when test="adult == 'false' or adult == ''">
+					AND adult = 0
+				</when>
+				<otherwise>
+					AND adult IN (0, 1)
+				</otherwise>
+			</choose>
 			ORDER BY popularity DESC
 			LIMIT 20;
     </select>
@@ -72,6 +88,14 @@
 			AND backdrop_path IS NOT NULL
 			AND original_language NOT IN ('ko','ja')
 			AND overview != ''
+			<choose>
+				<when test="adult == 'false' or adult == ''">
+					AND adult = 0
+				</when>
+				<otherwise>
+					AND adult IN (0, 1)
+				</otherwise>
+			</choose>
 			<if test="genre != null and genre != '' and genre != 'none'">
 				AND genre_ids LIKE CONCAT('%', ',', #{genre}, ',', '%')
 			</if>
@@ -109,6 +133,14 @@
 			AND backdrop_path IS NOT NULL
 			AND original_language NOT IN ('ko','ja')
 			AND overview != ''
+			<choose>
+				<when test="adult == 'false' or adult == ''">
+					AND adult = 0
+				</when>
+				<otherwise>
+					AND adult IN (0, 1)
+				</otherwise>
+			</choose>
 			<if test="genre != null and genre != '' and genre != 'none'">
 				AND genre_ids LIKE CONCAT('%', ',', #{genre}, ',', '%')
 			</if>

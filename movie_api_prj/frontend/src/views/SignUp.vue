@@ -33,7 +33,7 @@
             <div class="validation-div" v-if="errorMsgBag.userEmail">{{ errorMsgBag.userEmail }}</div>
           </div>
           <div class="col-12">
-            <input type="checkbox" class="form-check-input" id="isAdult" v-model="user.isAdult">
+            <input type="checkbox" class="form-check-input" id="isAdult" v-model="user.adult">
             <label class="form-check-label" for="isAdult">성인 여부를 체크해주세요.</label>
           </div>
         </div>

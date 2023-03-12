@@ -21,16 +21,20 @@ class MovieService {
     return instance.get(`/movie/detail/${id}`)
   }
 
-  getMovieListAll(pageNo) {
-    return instance.get(`/movie/list/${pageNo}`)
+  getMovieListAll(pageNo, adult) {
+    return instance.get(`/movie/list/${pageNo}/${adult}`)
   }
 
-  getMovieListAllForResult(pageNo, genre, sortBy) {
-    return instance.get(`/movie/list/${pageNo}/${genre}/${sortBy}`)
+  getMovieListAllForResult(pageNo, genre, sortBy, adult) {
+    return instance.get(`/movie/list/${pageNo}/${genre}/${sortBy}/${adult}`)
   }
 
-  getMovieListAllForResultTitle(pageNo, title) {
-    return instance.get(`/movie/list/${pageNo}/${title}`)
+  getMovieListAllForResultTitle(pageNo, title, adult) {
+    return instance.get(`/movie/list/${pageNo}/${title}/${adult}`)
+  }
+
+  getCreditForMovieId(movieId) {
+    return instance.get(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${process.env.VUE_APP_TMDB}`)
   }
 }
 

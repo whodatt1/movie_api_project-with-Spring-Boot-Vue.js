@@ -73,16 +73,26 @@ export default {
   },
   setup() { },
   created() { },
+  computed: {
+    auth() {
+      return this.$store.state.auth
+    }
+  },
   mounted() {
-    this.getMovieForMainUpComing()
-    this.getMovieForMainLatest()
-    this.getMovieForMainTop()
-    this.getMovieForMainPopular()
+    let adult = false
+
+    if (this.auth) {
+      adult = this.auth.user.adult
+    }
+    this.getMovieForMainUpComing(adult)
+    this.getMovieForMainLatest(adult)
+    this.getMovieForMainTop(adult)
+    this.getMovieForMainPopular(adult)
   },
   unmounted() { },
   methods: {
-    getMovieForMainUpComing() {
-      MovieService.getMovieForMainUpComing('true')
+    getMovieForMainUpComing(adult) {
+      MovieService.getMovieForMainUpComing(adult)
         .then((result) => {
           this.upComingMovies = result.data
         }).catch((err) => {
@@ -90,8 +100,8 @@ export default {
         })
     },
 
-    getMovieForMainLatest() {
-      MovieService.getMovieForMainLatest('true')
+    getMovieForMainLatest(adult) {
+      MovieService.getMovieForMainLatest(adult)
         .then((result) => {
           this.latestMovies = result.data
         }).catch((err) => {
@@ -99,8 +109,8 @@ export default {
         })
     },
 
-    getMovieForMainTop() {
-      MovieService.getMovieForMainTop('true')
+    getMovieForMainTop(adult) {
+      MovieService.getMovieForMainTop(adult)
         .then((result) => {
           this.topMovies = result.data
         }).catch((err) => {
@@ -108,8 +118,8 @@ export default {
         })
     },
 
-    getMovieForMainPopular() {
-      MovieService.getMovieForMainPopular('true')
+    getMovieForMainPopular(adult) {
+      MovieService.getMovieForMainPopular(adult)
         .then((result) => {
           this.popularMovies = result.data
         }).catch((err) => {

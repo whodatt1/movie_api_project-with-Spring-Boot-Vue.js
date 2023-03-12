@@ -14,6 +14,23 @@
         </tr>
       </thead>
       <tbody>
+        <tr v-for="(item, idx) in communityNoticeList" :key="idx">
+          <th scope="row" style="width: 8%; text-align: center;">{{ item.id }}</th>
+          <th scope="row" style="width: 5%; text-align: center;">{{ item.category === 'normal' ? '일반' : '공지' }}</th>
+          <th scope="row" style="width: 55%;">
+            <div class="div-wrap">
+              <div class="title-div">
+                <router-link :to="`/communitydetail?id=${item.id}&pageNo=${params.pageNo}&type=${params.type}&keyWord=${params.keyWord}`" class="comu-title">{{ item.title }}</router-link>
+              </div>
+              <span v-if="item.replyCount !== 0" class="reply">[{{ item.replyCount }}]</span>
+              <span v-if="item.file"><i class="fa-sharp fa-regular fa-image"></i></span>
+            </div>
+          </th>
+          <th scope="row" style="width: 8%; text-align: center;">{{ item.writerId }}</th>
+          <th scope="row" style="width: 8%; text-align: center;">{{ app.getRegDtForCommunity(item.regDt) }}</th>
+          <th scope="row" style="width: 8%; text-align: center;">{{ item.views }}</th>
+          <th scope="row" style="width: 8%; text-align: center;">{{ item.vote }}</th>
+        </tr>
         <tr v-for="(item, idx) in communityList" :key="idx">
           <th scope="row" style="width: 8%; text-align: center;">{{ item.id }}</th>
           <th scope="row" style="width: 5%; text-align: center;">{{ item.category === 'normal' ? '일반' : '공지' }}</th>
@@ -71,6 +88,7 @@ export default {
         keyWord: ''
       },
       communityList: [],
+      communityNoticeList: [],
       startPage: '',
       endPage: '',
       next: '',
@@ -92,15 +110,14 @@ export default {
       this.params.pageNo = this.$route.query.pageNo
     }
     this.getCommunityAll(this.params)
+    this.getCommunityAllNotice(this.params)
   },
   unmounted() {},
   methods: {
     range(start, end) {
       return Array(end - start + 1).fill().map((val, i) => start + i)
     },
-    getCommunityAll() {
-      const params = this.params
-
+    getCommunityAll(params) {
       CommunityService.getCommunityAll(params)
         .then((result) => {
           this.startPage = result.data.startPage
@@ -111,6 +128,9 @@ export default {
         }).catch((err) => {
           console.log(err)
         })
+    },
+    getCommunityAllNotice(params) {
+
     }
   }
 }

@@ -28,7 +28,8 @@ export default {
     return {
       pageNo: '',
       bookmarkList: [],
-      moreVis: 'hidden'
+      moreVis: 'hidden',
+      userId: ''
     }
   },
   computed: {
@@ -40,9 +41,12 @@ export default {
   created() {},
   mounted() {
     if (this.$route.query.pageNo) {
-      this.pageNo = this.$route.query.pageNo
+      this.pageNo = parseInt(this.$route.query.pageNo)
     }
-    this.getBookmarkByUserId(this.auth.user.userId)
+    if (this.auth.user) {
+      this.userId = this.auth.user.userId
+    }
+    this.getBookmarkByUserId(this.userId)
   },
   unmounted() {},
   methods: {
@@ -59,6 +63,10 @@ export default {
         }).catch((err) => {
           console.log(err)
         })
+    },
+    getMore() {
+      this.pageNo += 1
+      this.getBookmarkByUserId(this.userId)
     }
   }
 }

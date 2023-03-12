@@ -18,6 +18,7 @@ public class Criteria {
 	private String keyWord;
 	
 	private String userId;
+	private String adult;
 	
 	public Criteria() {
 		this(1, 10);

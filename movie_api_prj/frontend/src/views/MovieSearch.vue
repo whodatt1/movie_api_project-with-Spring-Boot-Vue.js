@@ -35,20 +35,25 @@ export default {
       pageNo: 1,
       title: '',
       movieList: [],
-      moreVis: 'visible'
+      moreVis: 'visible',
+      adult: false
     }
   },
   setup() {},
   created() {},
   mounted() {
-    this.getMovieListAll()
+    if (this.$route.query.pageNo) {
+      this.pageNo = parseInt(this.$route.query.pageNo)
+    }
+    if (this.$route.query.adult) {
+      this.adult = this.$route.query.adult
+    }
+    this.getMovieListAll(this.pageNo, this.adult)
   },
   unmounted() {},
   methods: {
-    getMovieListAll() {
-      this.pageNo = 1
-
-      MovieService.getMovieListAll(this.pageNo)
+    getMovieListAll(pageNo, adult) {
+      MovieService.getMovieListAll(pageNo, adult)
         .then((result) => {
           this.movieList = result.data.movieList
         }).catch((err) => {
@@ -59,12 +64,13 @@ export default {
       this.pageNo = 1
 
       let title = this.title
+      const adult = this.adult
 
       if (this.title === '') {
         title = 'none'
       }
 
-      MovieService.getMovieListAllForResultTitle(this.pageNo, title)
+      MovieService.getMovieListAllForResultTitle(this.pageNo, title, adult)
         .then((result) => {
           this.movieList = result.data.movieList
           if (result.data.criteria.pageNo < result.data.endPage) {
